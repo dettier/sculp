@@ -1,0 +1,37 @@
+{
+  "extends": "airbnb",
+  "parser": "babel-eslint",          // https://github.com/babel/babel-eslint
+  "plugins": [
+    "mocha"                          // https://github.com/lo1tuma/eslint-plugin-mocha
+  ],
+  "env": {                           // http://eslint.org/docs/user-guide/configuring.html#specifying-environments
+    "browser": true,                 // browser global variables
+    "node": true                     // Node.js global variables and Node.js-specific rules
+  },
+  "rules": {
+    "prefer-arrow-callback": 0,
+    "no-unused-expressions": ["error", { "allowShortCircuit": true }],
+    "one-var": 0,
+    "one-var-declaration-per-line": 0,
+    "global-require": 0,
+    "no-return-assign": 0,
+    "prefer-template": 0,
+    "arrow-body-style": 0,
+    "no-confusing-arrow": 0,
+    "no-else-return": 0,
+    "func-names": 0,
+    "comma-dangle": 0,
+    "no-param-reassign": 0,
+    "array-bracket-spacing": 0,
+    "padded-blocks": [0, "never"],   // http://eslint.org/docs/rules/padded-blocks
+    "no-underscore-dangle": 0,
+    "space-before-function-paren": [2, "always"], // http://eslint.org/docs/rules/space-before-function-paren
+    "curly": [0, "multi-line"],      // http://eslint.org/docs/rules/curly
+    "no-console" : 2,
+    "spaced-comment": 0,
+    "key-spacing": [0, {             // http://eslint.org/docs/rules/key-spacing
+      "beforeColon": true,
+      "afterColon": true
+    }]
+  }
+}
