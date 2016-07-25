@@ -238,7 +238,7 @@ describe('Sculp:', function () {
 
   });
 
-  it('should remove initial item values if such optionw provided', function () {
+  it('should remove initial item values if such option provided', function () {
     const scheme = {
       type: TYPE.OBJECT,
       properties: {
