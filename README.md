@@ -1,19 +1,16 @@
 # sculp [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url] [![Coverage percentage][coveralls-image]][coveralls-url]
 > Most functional javascript object validation library
 
+## Warning! Not production ready
+
+Description will be added soon.
+
 ## Installation
 
 ```sh
 $ npm install --save sculp
 ```
 
-## Usage
-
-```js
-var sculp = require('sculp');
-
-sculp('Rainbow');
-```
 ## License
 
 MIT © [dettier]()
