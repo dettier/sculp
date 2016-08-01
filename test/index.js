@@ -6,7 +6,7 @@
 import chai from 'chai';
 const assert = chai.assert;
 
-import { validateSync } from '../lib/index';
+import { validate } from '../lib/index';
 import { TYPE, PRESENCE } from '../lib/enums';
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -23,15 +23,15 @@ describe('Sculp:', function () {
       let result;
 
       scheme = { type : TYPE.STRING };
-      result = validateSync('aaabbbccc', scheme);
+      result = validate('aaabbbccc', scheme);
       assert.equal(result, 'aaabbbccc');
 
       scheme = { type : TYPE.NUMBER, precision : 2 };
-      result = validateSync('7.4444444', scheme);
+      result = validate('7.4444444', scheme);
       assert.equal(result, 7.44);
 
       scheme = { type : TYPE.BOOLEAN };
-      result = validateSync('true', scheme);
+      result = validate('true', scheme);
       assert.equal(result, true);
     });
 
@@ -40,7 +40,7 @@ describe('Sculp:', function () {
         type : TYPE.ARRAY,
         items : { type : TYPE.NUMBER }
       };
-      const result = validateSync(['3', 4, '5'], scheme);
+      const result = validate(['3', 4, '5'], scheme);
       assert.deepEqual(result, [ 3, 4, 5 ]);
     });
 
@@ -51,7 +51,7 @@ describe('Sculp:', function () {
       };
 
       assert.throws(function () {
-        validateSync({ a : '2' }, scheme);
+        validate({ a : '2' }, scheme);
       }, 'Ошибка валидации поля');
     });
 
@@ -63,7 +63,7 @@ describe('Sculp:', function () {
           key2 : { type : TYPE.STRING }
         }
       };
-      const result = validateSync({ key1 : '-1', key2 : 'a' }, scheme);
+      const result = validate({ key1 : '-1', key2 : 'a' }, scheme);
       assert.deepEqual(result, { key1 : -1, key2 : 'a' });
     });
 
@@ -75,10 +75,10 @@ describe('Sculp:', function () {
           key2 : { type : TYPE.STRING }
         }
       };
-      const result = validateSync({ key1 : '-1', key2 : 'a' }, scheme);
+      const result = validate({ key1 : '-1', key2 : 'a' }, scheme);
       assert.deepEqual(result, { key1 : -1, key2 : 'a' });
 
-      const result2 = validateSync({}, scheme);
+      const result2 = validate({}, scheme);
       assert.deepEqual(result2, {});
     });
 
@@ -94,10 +94,10 @@ describe('Sculp:', function () {
         }
       };
       assert.throws(function () {
-        validateSync([ {} ], scheme);
+        validate([ {} ], scheme);
       }, 'Не удалось привести значение к требуемому типу');
       assert.throws(function () {
-        validateSync([ [] ], scheme);
+        validate([ [] ], scheme);
       }, 'Не удалось привести значение к требуемому типу');
     });
 
@@ -117,7 +117,7 @@ describe('Sculp:', function () {
           }
         }
       };
-      const result = validateSync({ key : 3 }, scheme);
+      const result = validate({ key : 3 }, scheme);
       assert.deepEqual(result, { key : 10 });
     });
 
@@ -132,7 +132,7 @@ describe('Sculp:', function () {
           }
         }
       };
-      const result = validateSync({ key : 3 }, scheme);
+      const result = validate({ key : 3 }, scheme);
       assert.deepEqual(result, undefined);
     });
 
@@ -147,7 +147,7 @@ describe('Sculp:', function () {
         }
       }
     };
-    const result = validateSync(undefined, scheme);
+    const result = validate(undefined, scheme);
     assert.deepEqual(result, undefined);
   });
 
@@ -164,7 +164,7 @@ describe('Sculp:', function () {
           }
         }
       };
-      const result = validateSync(undefined, scheme);
+      const result = validate(undefined, scheme);
       assert.deepEqual(result, undefined);
 
     });
@@ -193,10 +193,10 @@ describe('Sculp:', function () {
 
     // this should fail as "c" value < 10
     assert.throws(() =>
-      validateSync(value, scheme));
+      validate(value, scheme));
 
     scheme.properties.b.$presence = PRESENCE.ABSENT;
-    const result = validateSync(value, scheme);
+    const result = validate(value, scheme);
     assert.deepEqual(result, { a : 5 });
   });
 
@@ -215,7 +215,7 @@ describe('Sculp:', function () {
       };
 
       const value = { c : 'a' };
-      const result = validateSync(value, scheme);
+      const result = validate(value, scheme);
       assert.deepEqual(result, { a : '1' });
     });
 
@@ -232,7 +232,7 @@ describe('Sculp:', function () {
       };
 
       const value = { c : 'a' };
-      const result = validateSync(value, scheme);
+      const result = validate(value, scheme);
       assert.deepEqual(result, { a: '1', b : '2' });
     });
 
@@ -254,7 +254,7 @@ describe('Sculp:', function () {
     };
 
     const value = { a : 1, b : 2 };
-    const result = validateSync(value, scheme, { removeInitial : true });
+    const result = validate(value, scheme, { removeInitial : true });
     assert.deepEqual(result, { b : 2 });
   });
 
@@ -269,7 +269,7 @@ describe('Sculp:', function () {
     };
 
     const value = [ 1, undefined, 2];
-    const result = validateSync(value, scheme);
+    const result = validate(value, scheme);
     assert.deepEqual(result, [ 1, 2 ]);
   });
 
@@ -285,7 +285,7 @@ describe('Sculp:', function () {
     };
 
     const value = [ 1, undefined, 2];
-    const result = validateSync(value, scheme);
+    const result = validate(value, scheme);
     assert.deepEqual(result, []);
   });
 

@@ -6,7 +6,7 @@
 import { assert } from 'chai';
 import scheme from './sculp-scheme';
 
-import { validate, validateSync, ValidationError, PRESENCE } from '../lib/index';
+import { tryValidate, validate, ValidationError, PRESENCE } from '../lib/index';
 
 ////////////////////////////////////////////////////////////////////////////////
 // REQUIRES : END
@@ -15,7 +15,7 @@ import { validate, validateSync, ValidationError, PRESENCE } from '../lib/index'
 describe('Basic validation tests with example scheme', function () {
 
   it('Empty value passes validation', function () {
-    assert.isUndefined(validateSync(undefined, scheme));
+    assert.isUndefined(validate(undefined, scheme));
   });
 
   it('Correct value passes validation', function () {
@@ -25,7 +25,7 @@ describe('Basic validation tests with example scheme', function () {
       agreedToTerms : true
     };
 
-    const result = validateSync(value, scheme);
+    const result = validate(value, scheme);
     assert.deepEqual(result, {
       ...value,
       fullname : 'John Smith'
@@ -39,7 +39,7 @@ describe('Basic validation tests with example scheme', function () {
       agreedToTerms : false
     };
 
-    assert.throws(() => validateSync(value, scheme), ValidationError);
+    assert.throws(() => validate(value, scheme), ValidationError);
   });
 
   it('Mailing address should be absent if main address is empty', function () {
@@ -50,7 +50,7 @@ describe('Basic validation tests with example scheme', function () {
       agreedToTerms : true
     };
 
-    const { result, fieldsState } = validate(value, scheme);
+    const { result, fieldsState } = tryValidate(value, scheme);
 
     assert.deepEqual(result, {
       firstname : 'John',
@@ -71,7 +71,7 @@ describe('Basic validation tests with example scheme', function () {
       agreedToTerms : true
     };
 
-    const { result, fieldsState } = validate(value, scheme);
+    const { result, fieldsState } = tryValidate(value, scheme);
 
     assert.deepEqual(result, {
       firstname : 'John',
