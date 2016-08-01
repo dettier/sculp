@@ -254,7 +254,7 @@ describe('Sculp:', function () {
     };
 
     const value = { a : 1, b : 2 };
-    const result = validateSync(value, scheme, '', { removeInitial : true });
+    const result = validateSync(value, scheme, { removeInitial : true });
     assert.deepEqual(result, { b : 2 });
   });
 
@@ -287,29 +287,6 @@ describe('Sculp:', function () {
     const value = [ 1, undefined, 2];
     const result = validateSync(value, scheme);
     assert.deepEqual(result, []);
-  });
-
-  it('subfield validation returns subfield only', function () {
-
-    const scheme = {
-      type : TYPE.OBJECT,
-      properties : {
-        a : { type : TYPE.NUMBER },
-        b : {
-          type : TYPE.OBJECT,
-          properties : {
-            c : {
-              type : TYPE.NUMBER,
-              $gt : 10
-            }
-          }
-        }
-      }
-    };
-
-    const value = { a : 5, b : { c : 11 } };
-    const result = validateSync(value, scheme, '.b');
-    assert.deepEqual(result, { c : 11 });
   });
 
 });
