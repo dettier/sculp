@@ -54,7 +54,7 @@ describe('casts:', function () {
 
   describe('DATE:', function () {
 
-    it('Должен пытаться преобразовывать к date', function () {
+    it('Should cast to date if it is possible', function () {
       assert.deepEqual(CASTS[DATE](-366580080000), new Date(-366580080000));
       assert.deepEqual(CASTS[DATE]('-366580080000'), new Date(-366580080000));
       assert.deepEqual(CASTS[DATE]('21 May 1958 10:12 GMT+0600').getTime(),

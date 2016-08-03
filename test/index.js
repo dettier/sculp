@@ -52,7 +52,7 @@ describe('Sculp:', function () {
 
       assert.throws(function () {
         validate({ a : '2' }, scheme);
-      }, 'Ошибка валидации поля');
+      }, 'Validation failed (сouldn\'t cast value to type)');
     });
 
     it('should validate object', function () {
@@ -95,10 +95,10 @@ describe('Sculp:', function () {
       };
       assert.throws(function () {
         validate([ {} ], scheme);
-      }, 'Не удалось привести значение к требуемому типу');
+      }, 'Validation failed for field "[0]" (сouldn\'t cast value to type)');
       assert.throws(function () {
         validate([ [] ], scheme);
-      }, 'Не удалось привести значение к требуемому типу');
+      }, 'Validation failed for field "[0]" (сouldn\'t cast value to type)');
     });
 
   });
