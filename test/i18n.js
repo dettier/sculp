@@ -12,7 +12,7 @@ import { TYPE, PRESENCE } from '../lib/enums';
 // REQUIRES : END
 ////////////////////////////////////////////////////////////////////////////////
 
-describe('internationalization:', function () {
+describe('i18n:', function () {
 
   describe('lang:', function () {
 
@@ -21,7 +21,7 @@ describe('internationalization:', function () {
       $presence : PRESENCE.REQUIRED
     };
 
-    it('Should have english messages by default', function () {
+    it('should have english messages by default', function () {
 
       assert.throws(() =>
         validate(undefined, scheme),
@@ -29,7 +29,7 @@ describe('internationalization:', function () {
 
     });
 
-    it('Should have russian messages if language changed', function () {
+    it('should have russian messages if language changed', function () {
 
       assert.throws(() => {
         lang('ru');

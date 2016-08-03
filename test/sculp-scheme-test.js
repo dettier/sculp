@@ -14,11 +14,11 @@ import { tryValidate, validate, ValidationError, PRESENCE } from '../lib/index';
 
 describe('Basic validation tests with example scheme', function () {
 
-  it('Empty value passes validation', function () {
+  it('empty value passes validation', function () {
     assert.isUndefined(validate(undefined, scheme));
   });
 
-  it('Correct value passes validation', function () {
+  it('correct value passes validation', function () {
     const value = {
       firstname : 'John',
       lastname : 'Smith',
@@ -32,7 +32,7 @@ describe('Basic validation tests with example scheme', function () {
     });
   });
 
-  it('Should throw if not agreed to terms', function () {
+  it('should throw if not agreed to terms', function () {
     const value = {
       firstname : 'John',
       lastname : 'Smith',
@@ -42,7 +42,7 @@ describe('Basic validation tests with example scheme', function () {
     assert.throws(() => validate(value, scheme), ValidationError);
   });
 
-  it('Mailing address should be absent if main address is empty', function () {
+  it('mailing address should be absent if main address is empty', function () {
     const value = {
       firstname : 'John',
       lastname : 'Smith',
@@ -61,7 +61,7 @@ describe('Basic validation tests with example scheme', function () {
     assert.equal(fieldsState['.mailingAddress'].$presence, PRESENCE.ABSENT);
   });
 
-  it('Mailing address should be present if main address is defined', function () {
+  it('mailing address should be present if main address is defined', function () {
     const value = {
       firstname : 'John',
       lastname : 'Smith',

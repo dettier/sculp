@@ -19,9 +19,9 @@ import {
 
 describe('object-helper:', function () {
 
-  describe('hasGet', function () {
+  describe('hasGetValue:', function () {
 
-    it('hasGetValue возвращает объект с полями has и value', function () {
+    it('should return object with has and get fields', function () {
       let result;
       result = hasGetValue({ a : 1 }, '.a');
       assert.deepEqual(result, { has : true, value : 1 });
@@ -40,13 +40,16 @@ describe('object-helper:', function () {
 
   describe('set', function () {
 
-    it('должен создавать объект при устрановке в undefined значение', function () {
+    it('should create intermediate objects and arrays', function () {
       let result;
       result = setValue(undefined, '.props.a', 5);
       assert.deepEqual(result, { props : { a : 5 } });
 
       result = setValue(undefined, '.props.a', undefined, false);
       assert.deepEqual(result, { props : { a : undefined } });
+
+      result = setValue(undefined, '[1].a', undefined, false);
+      assert.deepEqual(result, [ , { a : undefined } ]); // eslint-disable-line no-sparse-arrays
 
       result = setValue(undefined, '.props.a', undefined, true);
       assert.isUndefined(result);
@@ -59,7 +62,7 @@ describe('object-helper:', function () {
 
   describe('get', function () {
 
-    it('должен вытаскивать из объекта', function () {
+    it('should get value from object', function () {
       const object = {
         contacts : {
           phones : [ '911' ]
@@ -69,7 +72,7 @@ describe('object-helper:', function () {
       assert.deepEqual(result, '911');
     });
 
-    it('должен вытаскивать из массива', function () {
+    it('should get value from array', function () {
       const value = [
         { path: 'a', photosCount: 2 },
         { path: 'b', photosCount: 2 }
