@@ -5,7 +5,7 @@
 
 import { assert } from 'chai';
 
-import { validate, lang } from '../lib/index';
+import { validate } from '../lib/index';
 import { TYPE, PRESENCE } from '../lib/enums';
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -32,10 +32,8 @@ describe('i18n:', function () {
     it('should have russian messages if language changed', function () {
 
       assert.throws(() => {
-        lang('ru');
-        validate(undefined, scheme);
+        validate(undefined, scheme, { lang : 'ru' });
       }, 'Ошибка валидации (значение не указано)');
-      lang('en');
 
     });
 
