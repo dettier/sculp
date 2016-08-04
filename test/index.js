@@ -18,6 +18,11 @@ describe('Sculp:', function () {
 
   describe('validate:', function () {
 
+    it('should throw if type is set but undefined', function () {
+      const scheme = { type : TYPE.STRING111 };
+      assert.throws(() => validate('111', scheme), 'Unknown type');
+    });
+
     it('should validate primitive values', function () {
       let scheme;
       let result;
