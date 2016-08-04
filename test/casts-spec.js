@@ -8,7 +8,7 @@ import { assert } from 'chai';
 import CASTS from '../lib/casts';
 import { TYPE, CAST_ERROR } from '../lib/enums';
 
-const { STRING, NUMBER, DATE, BOOLEAN } = TYPE;
+const { STRING, NUMBER, DATE, BOOLEAN, FUNCTION } = TYPE;
 
 ////////////////////////////////////////////////////////////////////////////////
 // REQUIRES : END
@@ -68,6 +68,24 @@ describe('casts:', function () {
       assert.strictEqual(CASTS[DATE]({}), CAST_ERROR);
       assert.strictEqual(CASTS[DATE]('21May195810:12'), CAST_ERROR);
       assert.strictEqual(CASTS[DATE]('2sf2/3/23'), CAST_ERROR);
+    });
+
+  });
+
+
+  describe('FUNCTION:', function () {
+
+    it('should return value if value is a function', function () {
+      const f = () => {};
+      assert.strictEqual(CASTS[FUNCTION](f), f);
+    });
+
+    it('should return error object if value is not a function', function () {
+      assert.strictEqual(CASTS[FUNCTION](undefined), CAST_ERROR);
+      assert.strictEqual(CASTS[FUNCTION]([]), CAST_ERROR);
+      assert.strictEqual(CASTS[FUNCTION]({}), CAST_ERROR);
+      assert.strictEqual(CASTS[FUNCTION]('21May195810:12'), CAST_ERROR);
+      assert.strictEqual(CASTS[FUNCTION](15), CAST_ERROR);
     });
 
   });
