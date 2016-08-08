@@ -12,7 +12,7 @@ import { validate, TYPE, PRESENCE } from '../lib/index';
 // REQUIRES : END
 ////////////////////////////////////////////////////////////////////////////////
 
-describe('Results caching and reuse:', function () {
+describe('Transform and compute functions:', function () {
 
   it('should calculate transforms', function () {
     const scheme = {
