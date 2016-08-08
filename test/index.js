@@ -57,7 +57,7 @@ describe('Sculp:', function () {
 
       assert.throws(function () {
         validate({ a : '2' }, scheme);
-      }, 'Validation failed (сouldn\'t cast value to type)');
+      }, 'Validation failed (сouldn\'t cast value to type ARRAY)');
     });
 
     it('should validate object', function () {
@@ -100,10 +100,10 @@ describe('Sculp:', function () {
       };
       assert.throws(function () {
         validate([ {} ], scheme);
-      }, 'Validation failed for field "[0]" (сouldn\'t cast value to type)');
+      }, 'Validation failed for field "[0]" (сouldn\'t cast value to type NUMBER)');
       assert.throws(function () {
         validate([ [] ], scheme);
-      }, 'Validation failed for field "[0]" (сouldn\'t cast value to type)');
+      }, 'Validation failed for field "[0]" (сouldn\'t cast value to type NUMBER)');
     });
 
   });
