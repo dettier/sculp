@@ -62,7 +62,7 @@ describe('casts:', function () {
   describe('NUMBER:', function () {
 
     it('should cast to number if it is possible', function () {
-      assert.equal(CASTS[NUMBER]('3.2'), 3.2);
+      assert.equal(CASTS[NUMBER](' 3.2 '), 3.2);
       assert.equal(CASTS[NUMBER](3.2), 3.2);
     });
 
@@ -80,10 +80,10 @@ describe('casts:', function () {
 
     it('should cast to date if it is possible', function () {
       assert.deepEqual(CASTS[DATE](-366580080000), new Date(-366580080000));
-      assert.deepEqual(CASTS[DATE]('-366580080000'), new Date(-366580080000));
-      assert.deepEqual(CASTS[DATE]('21 May 1958 10:12 GMT+0600').getTime(),
+      assert.deepEqual(CASTS[DATE](' -366580080000 '), new Date(-366580080000));
+      assert.deepEqual(CASTS[DATE](' 21 May 1958 10:12 GMT+0600').getTime(),
                        new Date(-366580080000).getTime());
-      assert.instanceOf(CASTS[DATE]('2112/3/23'), Date);
+      assert.instanceOf(CASTS[DATE]('2112/3/23 '), Date);
     });
 
     it('should return error object if unable to cast', function () {
@@ -121,7 +121,7 @@ describe('casts:', function () {
       assert.equal(CASTS[BOOLEAN](true), true);
       assert.equal(CASTS[BOOLEAN]('true'), true);
       assert.equal(CASTS[BOOLEAN](' TrUe  '), true);
-      assert.equal(CASTS[BOOLEAN]('t'), true);
+      assert.equal(CASTS[BOOLEAN]('t '), true);
       assert.equal(CASTS[BOOLEAN]('1'), true);
       assert.equal(CASTS[BOOLEAN](1), true);
       assert.equal(CASTS[BOOLEAN](false), false);
