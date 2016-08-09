@@ -8,7 +8,7 @@ import { assert } from 'chai';
 import CASTS from '../lib/casts';
 import { TYPE, CAST_ERROR } from '../lib/enums';
 
-const { STRING, NUMBER, DATE, BOOLEAN, FUNCTION } = TYPE;
+const { STRING, STRING_NET, NUMBER, DATE, BOOLEAN, FUNCTION } = TYPE;
 
 ////////////////////////////////////////////////////////////////////////////////
 // REQUIRES : END
@@ -19,7 +19,7 @@ describe('casts:', function () {
   describe('STRING:', function () {
 
     it('should cast to string if it is possible', function () {
-      assert.equal(CASTS[STRING]('string'), 'string');
+      assert.equal(CASTS[STRING]('string '), 'string ');
       // eslint-disable-next-line no-new-wrappers
       assert.equal(CASTS[STRING](new String('string')), 'string');
       assert.equal(CASTS[STRING](3.2), '3.2');
@@ -30,6 +30,30 @@ describe('casts:', function () {
       assert.strictEqual(CASTS[STRING](undefined), CAST_ERROR);
       assert.strictEqual(CASTS[STRING]({}), CAST_ERROR);
       assert.strictEqual(CASTS[STRING]([]), CAST_ERROR);
+    });
+
+  });
+
+  describe('STRING_NET:', function () {
+
+    it('should return undefined is string is empty or whitespace-only', function () {
+      assert.equal(CASTS[STRING_NET](''), undefined);
+      assert.equal(CASTS[STRING_NET](' '), undefined);
+      assert.equal(CASTS[STRING_NET]('\t'), undefined);
+    });
+
+    it('should cast to string if it is possible', function () {
+      assert.equal(CASTS[STRING_NET]('string '), 'string');
+      // eslint-disable-next-line no-new-wrappers
+      assert.equal(CASTS[STRING_NET](new String(' string')), 'string');
+      assert.equal(CASTS[STRING_NET](3.2), '3.2');
+      assert.equal(CASTS[STRING_NET](true), 'true');
+    });
+
+    it('should return error object if unable to cast', function () {
+      assert.strictEqual(CASTS[STRING_NET](undefined), CAST_ERROR);
+      assert.strictEqual(CASTS[STRING_NET]({}), CAST_ERROR);
+      assert.strictEqual(CASTS[STRING_NET]([]), CAST_ERROR);
     });
 
   });
