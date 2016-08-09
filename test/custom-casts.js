@@ -39,4 +39,19 @@ describe('Custom casts:', function () {
     assert.equal(result, 6);
   });
 
+  it('should use custom strict cast if it\'s provided', function () {
+
+    const options = {
+      strict : true,
+      castsStrict : {
+        [MY_CUSTOM_TYPE] (v) {
+          return v + 1;
+        }
+      }
+    };
+
+    const result = validate(5, scheme, options);
+    assert.equal(result, 6);
+  });
+
 });
