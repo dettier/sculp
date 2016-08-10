@@ -7,7 +7,7 @@ import chai from 'chai';
 const assert = chai.assert;
 
 import { validate } from '../lib/index';
-import { TYPE, PRESENCE } from '../lib/enums';
+import { Type, Presence } from '../lib/enums';
 
 ////////////////////////////////////////////////////////////////////////////////
 // REQUIRES : END
@@ -19,7 +19,7 @@ describe('Sculp:', function () {
   describe('validate:', function () {
 
     it('should throw if type is set but undefined', function () {
-      const scheme = { type : TYPE.STRING111 };
+      const scheme = { type : Type.STRING111 };
       assert.throws(() => validate('111', scheme), 'Unknown type');
     });
 
@@ -27,23 +27,23 @@ describe('Sculp:', function () {
       let scheme;
       let result;
 
-      scheme = { type : TYPE.STRING };
+      scheme = { type : Type.STRING };
       result = validate('aaabbbccc', scheme);
       assert.equal(result, 'aaabbbccc');
 
-      scheme = { type : TYPE.NUMBER, precision : 2 };
+      scheme = { type : Type.NUMBER, precision : 2 };
       result = validate('7.4444444', scheme);
       assert.equal(result, 7.44);
 
-      scheme = { type : TYPE.BOOLEAN };
+      scheme = { type : Type.BOOLEAN };
       result = validate('true', scheme);
       assert.equal(result, true);
     });
 
     it('should validate array', function () {
       const scheme = {
-        type : TYPE.ARRAY,
-        items : { type : TYPE.NUMBER }
+        type : Type.ARRAY,
+        items : { type : Type.NUMBER }
       };
       const result = validate(['3', 4, '5'], scheme);
       assert.deepEqual(result, [ 3, 4, 5 ]);
@@ -51,8 +51,8 @@ describe('Sculp:', function () {
 
     it('should throw error when couldn\'t validate array', function () {
       const scheme = {
-        type : TYPE.ARRAY,
-        items : { type : TYPE.NUMBER }
+        type : Type.ARRAY,
+        items : { type : Type.NUMBER }
       };
 
       assert.throws(function () {
@@ -62,10 +62,10 @@ describe('Sculp:', function () {
 
     it('should validate object', function () {
       const scheme = {
-        type : TYPE.OBJECT,
+        type : Type.OBJECT,
         properties : {
-          key1 : { type : TYPE.NUMBER },
-          key2 : { type : TYPE.STRING }
+          key1 : { type : Type.NUMBER },
+          key2 : { type : Type.STRING }
         }
       };
       const result = validate({ key1 : '-1', key2 : 'a' }, scheme);
@@ -74,10 +74,10 @@ describe('Sculp:', function () {
 
     it('should validate group', function () {
       const scheme = {
-        type : TYPE.GROUP,
+        type : Type.GROUP,
         properties : {
-          key1 : { type : TYPE.NUMBER },
-          key2 : { type : TYPE.STRING }
+          key1 : { type : Type.NUMBER },
+          key2 : { type : Type.STRING }
         }
       };
       const result = validate({ key1 : '-1', key2 : 'a' }, scheme);
@@ -93,9 +93,9 @@ describe('Sculp:', function () {
 
     it('should throw error when items are of wrong type', function () {
       const scheme = {
-        type : TYPE.ARRAY,
+        type : Type.ARRAY,
         items : {
-          type : TYPE.NUMBER
+          type : Type.NUMBER
         }
       };
       assert.throws(function () {
@@ -113,10 +113,10 @@ describe('Sculp:', function () {
 
     it('should change value to valid for primitive values', function () {
       const scheme = {
-        type : TYPE.OBJECT,
+        type : Type.OBJECT,
         properties : {
           key : {
-            type : TYPE.NUMBER,
+            type : Type.NUMBER,
             $gt : 5,
             valid : 10
           }
@@ -128,11 +128,11 @@ describe('Sculp:', function () {
 
     it('should change value to valid for objects if subfield validation failed', function () {
       const scheme = {
-        type : TYPE.OBJECT,
+        type : Type.OBJECT,
         valid : undefined,
         properties : {
           key : {
-            type : TYPE.NUMBER,
+            type : Type.NUMBER,
             $gt : 5
           }
         }
@@ -145,10 +145,10 @@ describe('Sculp:', function () {
 
   it('undefined value should remain undefined', function () {
     const scheme = {
-      type : TYPE.OBJECT,
+      type : Type.OBJECT,
       properties : {
         key : {
-          type : TYPE.NUMBER
+          type : Type.NUMBER
         }
       }
     };
@@ -161,10 +161,10 @@ describe('Sculp:', function () {
     it('should not calculate computes for undefined parent value', function () {
 
       const scheme = {
-        type : TYPE.OBJECT,
+        type : Type.OBJECT,
         properties : {
           key : {
-            type : TYPE.NUMBER,
+            type : Type.NUMBER,
             compute : () => 9
           }
         }
@@ -179,14 +179,14 @@ describe('Sculp:', function () {
   it('failed validation for absent fields does not matter', function () {
 
     const scheme = {
-      type : TYPE.OBJECT,
+      type : Type.OBJECT,
       properties : {
-        a : { type : TYPE.NUMBER },
+        a : { type : Type.NUMBER },
         b : {
-          type : TYPE.OBJECT,
+          type : Type.OBJECT,
           properties : {
             c : {
-              type : TYPE.NUMBER,
+              type : Type.NUMBER,
               $gt : 10
             }
           }
@@ -200,7 +200,7 @@ describe('Sculp:', function () {
     assert.throws(() =>
       validate(value, scheme));
 
-    scheme.properties.b.$presence = PRESENCE.ABSENT;
+    scheme.properties.b.$presence = Presence.ABSENT;
     const result = validate(value, scheme);
     assert.deepEqual(result, { a : 5 });
   });
@@ -209,13 +209,13 @@ describe('Sculp:', function () {
 
     it('valid values: should change failed field value to valid', function () {
       const scheme = {
-        type: TYPE.OBJECT,
+        type: Type.OBJECT,
         valid : { a: '1' },
-        $presence: PRESENCE.REQUIRED,
+        $presence: Presence.REQUIRED,
         removeEmpty : true,
         properties: {
-          a: { type : TYPE.STRING },
-          b: { type : TYPE.STRING }
+          a: { type : Type.STRING },
+          b: { type : Type.STRING }
         }
       };
 
@@ -226,13 +226,13 @@ describe('Sculp:', function () {
 
     it('valid value should also be validated', function () {
       const scheme = {
-        type: TYPE.OBJECT,
+        type: Type.OBJECT,
         valid : { a: 1, b : 2 },
-        $presence: PRESENCE.REQUIRED,
+        $presence: Presence.REQUIRED,
         removeEmpty : true,
         properties: {
-          a: { type : TYPE.STRING },
-          b: { type : TYPE.STRING }
+          a: { type : Type.STRING },
+          b: { type : Type.STRING }
         }
       };
 
@@ -245,15 +245,15 @@ describe('Sculp:', function () {
 
   it('should remove initial item values if such option provided', function () {
     const scheme = {
-      type: TYPE.OBJECT,
+      type: Type.OBJECT,
       properties: {
         a : {
-          type : TYPE.NUMBER,
+          type : Type.NUMBER,
           removeInitial : true,
           initial : 1
         },
         b : {
-          type : TYPE.NUMBER
+          type : Type.NUMBER
         }
       }
     };
@@ -265,11 +265,11 @@ describe('Sculp:', function () {
 
   it('undefined array items are removed from array', function () {
     const scheme = {
-      type: TYPE.ARRAY,
-      $presence: PRESENCE.REQUIRED,
+      type: Type.ARRAY,
+      $presence: Presence.REQUIRED,
       items: {
-        type : TYPE.NUMBER,
-        $presence : PRESENCE.REQUIRED
+        type : Type.NUMBER,
+        $presence : Presence.REQUIRED
       }
     };
 
@@ -280,11 +280,11 @@ describe('Sculp:', function () {
 
   it('changing array item to undefined removes it from array', function () {
     const scheme = {
-      type: TYPE.ARRAY,
-      $presence: PRESENCE.REQUIRED,
+      type: Type.ARRAY,
+      $presence: Presence.REQUIRED,
       items: {
-        type : TYPE.NUMBER,
-        $presence : PRESENCE.REQUIRED,
+        type : Type.NUMBER,
+        $presence : Presence.REQUIRED,
         compute : () => undefined
       }
     };

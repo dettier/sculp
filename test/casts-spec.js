@@ -6,9 +6,9 @@
 import { assert } from 'chai';
 
 import CASTS from '../lib/casts';
-import { TYPE, CAST_ERROR } from '../lib/enums';
+import { Type, CAST_ERROR } from '../lib/enums';
 
-const { STRING, STRING_NET, NUMBER, DATE, BOOLEAN, FUNCTION } = TYPE;
+const { STRING, STRING_NET, NUMBER, DATE, BOOLEAN, FUNCTION } = Type;
 
 ////////////////////////////////////////////////////////////////////////////////
 // REQUIRES : END

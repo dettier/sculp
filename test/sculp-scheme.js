@@ -3,45 +3,45 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 import isEmpty from 'lodash-compat/lang/isEmpty';
-import { TYPE, PRESENCE } from '../lib/enums';
+import { Type, Presence } from '../lib/enums';
 
 ////////////////////////////////////////////////////////////////////////////////
 // REQUIRES : END
 ////////////////////////////////////////////////////////////////////////////////
 
 const scheme = {
-  type : TYPE.OBJECT,
+  type : Type.OBJECT,
   properties : {
 
     firstname : {
-      type : TYPE.STRING,
-      $presence : PRESENCE.REQUIRED
+      type : Type.STRING,
+      $presence : Presence.REQUIRED
     },
 
     lastname : {
-      type : TYPE.STRING,
-      $presence : PRESENCE.REQUIRED
+      type : Type.STRING,
+      $presence : Presence.REQUIRED
     },
 
     fullname : {
-      type : TYPE.STRING,
+      type : Type.STRING,
       compute : (fa) =>
         `${fa('^.firstname')} ${fa('^.lastname')}`
     },
 
     address : {
-      type : TYPE.STRING,
-      $presence : PRESENCE.OPTIONAL
+      type : Type.STRING,
+      $presence : Presence.OPTIONAL
     },
 
     mailingAddress : {
-      type : TYPE.STRING,
+      type : Type.STRING,
       $presence : (fa) =>
-        isEmpty(fa('^.address')) ? PRESENCE.ABSENT : PRESENCE.OPTIONAL
+        isEmpty(fa('^.address')) ? Presence.ABSENT : Presence.OPTIONAL
     },
 
     agreedToTerms : {
-      type : TYPE.BOOLEAN,
+      type : Type.BOOLEAN,
       $values : {
         value : [ true ],
         message : 'You should agree to terms'

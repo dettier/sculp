@@ -5,7 +5,7 @@
 
 import { assert } from 'chai';
 
-import { validate, TYPE, PRESENCE } from '../lib/index';
+import { validate, Type, Presence } from '../lib/index';
 
 ////////////////////////////////////////////////////////////////////////////////
 // REQUIRES : END
@@ -15,7 +15,7 @@ describe('Validation rules:', function () {
 
   it('should validate $values rule', function () {
     const scheme = {
-      type : TYPE.NUMBER,
+      type : Type.NUMBER,
       $values : [ -1, 0, 1 ]
     };
     assert.doesNotThrow(() => validate(0, scheme));
@@ -25,7 +25,7 @@ describe('Validation rules:', function () {
 
   it('should validate $regexp rule', function () {
     const scheme = {
-      type : TYPE.STRING,
+      type : Type.STRING,
       $regexp : '^\\d\\d\\d$'
     };
     assert.doesNotThrow(() => validate(100, scheme));
@@ -37,7 +37,7 @@ describe('Validation rules:', function () {
 
   it('should validate $lengthmin rule', function () {
     const scheme = {
-      type : TYPE.STRING,
+      type : Type.STRING,
       $lengthmin : 5
     };
     assert.doesNotThrow(() => validate('01570', scheme));
@@ -47,7 +47,7 @@ describe('Validation rules:', function () {
 
   it('should validate $lengthmax rule', function () {
     const scheme = {
-      type : TYPE.STRING,
+      type : Type.STRING,
       $lengthmax : 4
     };
     assert.doesNotThrow(() => validate('cool', scheme));
@@ -56,7 +56,7 @@ describe('Validation rules:', function () {
 
   it('should validate $length rule', function () {
     const scheme = {
-      type : TYPE.STRING,
+      type : Type.STRING,
       $length : 4
     };
     assert.doesNotThrow(() => validate('cool', scheme));
@@ -65,7 +65,7 @@ describe('Validation rules:', function () {
 
   it('should validate $ne rule', function () {
     const scheme = {
-      type : TYPE.STRING,
+      type : Type.STRING,
       $ne : 'sculp'
     };
     assert.doesNotThrow(() => validate('cool', scheme));
@@ -74,7 +74,7 @@ describe('Validation rules:', function () {
 
   it('should validate $min rule', function () {
     const scheme = {
-      type : TYPE.NUMBER,
+      type : Type.NUMBER,
       $min : 0
     };
     assert.doesNotThrow(() => validate(0, scheme));
@@ -84,7 +84,7 @@ describe('Validation rules:', function () {
 
   it('should validate $max rule', function () {
     const scheme = {
-      type : TYPE.NUMBER,
+      type : Type.NUMBER,
       $max : 0
     };
     assert.doesNotThrow(() => validate(0, scheme));
@@ -94,7 +94,7 @@ describe('Validation rules:', function () {
 
   it('should validate $gt rule', function () {
     const scheme = {
-      type : TYPE.NUMBER,
+      type : Type.NUMBER,
       $gt : 0
     };
     assert.doesNotThrow(() => validate(1, scheme));
@@ -104,7 +104,7 @@ describe('Validation rules:', function () {
 
   it('should validate $lt rule', function () {
     const scheme = {
-      type : TYPE.NUMBER,
+      type : Type.NUMBER,
       $lt : 0
     };
     assert.doesNotThrow(() => validate(-1, scheme));
@@ -114,8 +114,8 @@ describe('Validation rules:', function () {
 
   it('should validate $presence rule (REQUIRED)', function () {
     const scheme = {
-      type : TYPE.NUMBER,
-      $presence : PRESENCE.REQUIRED
+      type : Type.NUMBER,
+      $presence : Presence.REQUIRED
     };
     assert.doesNotThrow(() => validate(-1, scheme));
     assert.throws(() => validate(undefined, scheme), 'value is required');
@@ -124,8 +124,8 @@ describe('Validation rules:', function () {
   it('should validate $presence rule (ABSENT): should remove value and not throw',
   function () {
     const scheme = {
-      type : TYPE.NUMBER,
-      $presence : PRESENCE.ABSENT
+      type : Type.NUMBER,
+      $presence : Presence.ABSENT
     };
     assert.doesNotThrow(() => validate(undefined, scheme));
     assert.deepEqual(validate(1, scheme), undefined);

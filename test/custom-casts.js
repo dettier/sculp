@@ -6,7 +6,7 @@
 import { assert } from 'chai';
 
 import { validate } from '../lib/index';
-import { PRESENCE } from '../lib/enums';
+import { Presence } from '../lib/enums';
 
 ////////////////////////////////////////////////////////////////////////////////
 // REQUIRES : END
@@ -18,7 +18,7 @@ describe('Custom casts:', function () {
 
   const scheme = {
     type : MY_CUSTOM_TYPE,
-    $presence : PRESENCE.REQUIRED
+    $presence : Presence.REQUIRED
   };
 
   it('should throw if custom cast is not registered', function () {

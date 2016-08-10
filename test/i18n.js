@@ -6,7 +6,7 @@
 import { assert } from 'chai';
 
 import { validate } from '../lib/index';
-import { TYPE, PRESENCE } from '../lib/enums';
+import { Type, Presence } from '../lib/enums';
 
 ////////////////////////////////////////////////////////////////////////////////
 // REQUIRES : END
@@ -17,8 +17,8 @@ describe('i18n:', function () {
   describe('lang:', function () {
 
     const scheme = {
-      type : TYPE.STRING,
-      $presence : PRESENCE.REQUIRED
+      type : Type.STRING,
+      $presence : Presence.REQUIRED
     };
 
     it('should have english messages by default', function () {

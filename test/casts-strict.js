@@ -5,8 +5,8 @@
 
 import { assert } from 'chai';
 
-import { validate, TYPE } from '../lib/index';
-const { STRING, STRING_NET, NUMBER, DATE, BOOLEAN, FUNCTION } = TYPE;
+import { validate, Type } from '../lib/index';
+const { STRING, STRING_NET, NUMBER, DATE, BOOLEAN, FUNCTION } = Type;
 
 ////////////////////////////////////////////////////////////////////////////////
 // REQUIRES : END

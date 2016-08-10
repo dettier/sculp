@@ -5,9 +5,9 @@
 
 import { assert } from 'chai';
 
-import { Sculp, TYPE, PRESENCE } from '../lib/index';
+import { Sculp, Type, Presence } from '../lib/index';
 
-const { OPTIONAL, ABSENT } = PRESENCE;
+const { OPTIONAL, ABSENT } = Presence;
 
 ////////////////////////////////////////////////////////////////////////////////
 // REQUIRES : END
@@ -16,18 +16,18 @@ const { OPTIONAL, ABSENT } = PRESENCE;
 describe('Results caching and reuse:', function () {
 
   const scheme = {
-    type : TYPE.OBJECT,
-    $presence : PRESENCE.REQUIRED,
+    type : Type.OBJECT,
+    $presence : Presence.REQUIRED,
     properties : {
-      name : { type : TYPE.STRING },
-      age : { type : TYPE.NUMBER },
-      married : { type : TYPE.BOOLEAN },
+      name : { type : Type.STRING },
+      age : { type : Type.NUMBER },
+      married : { type : Type.BOOLEAN },
       spouse : {
-        type : TYPE.OBJECT,
+        type : Type.OBJECT,
         $presence : (fa) => fa('^^.married') === true ? OPTIONAL : ABSENT,
         properties : {
-          name : { type : TYPE.STRING },
-          age : { type : TYPE.NUMBER }
+          name : { type : Type.STRING },
+          age : { type : Type.NUMBER }
         }
       }
     }

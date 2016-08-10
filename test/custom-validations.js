@@ -7,7 +7,7 @@ import { assert } from 'chai';
 import startsWith from 'underscore.string/startsWith';
 
 import { validate } from '../lib/index';
-import { TYPE } from '../lib/enums';
+import { Type } from '../lib/enums';
 
 ////////////////////////////////////////////////////////////////////////////////
 // REQUIRES : END
@@ -16,7 +16,7 @@ import { TYPE } from '../lib/enums';
 describe('Custom validations:', function () {
 
   const scheme = {
-    type : TYPE.STRING,
+    type : Type.STRING,
     $startsWith : 'AB'
   };
 

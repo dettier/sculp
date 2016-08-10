@@ -6,7 +6,7 @@
 import { assert } from 'chai';
 import scheme from './sculp-scheme';
 
-import { tryValidate, validate, ValidationError, PRESENCE } from '../lib/index';
+import { tryValidate, validate, ValidationError, Presence } from '../lib/index';
 
 ////////////////////////////////////////////////////////////////////////////////
 // REQUIRES : END
@@ -58,7 +58,7 @@ describe('Basic validation tests with example scheme', function () {
       fullname : 'John Smith',
       agreedToTerms : true
     });
-    assert.equal(fieldsState['.mailingAddress'].$presence, PRESENCE.ABSENT);
+    assert.equal(fieldsState['.mailingAddress'].$presence, Presence.ABSENT);
   });
 
   it('mailing address should be present if main address is defined', function () {
@@ -81,7 +81,7 @@ describe('Basic validation tests with example scheme', function () {
       mailingAddress : 'New York City',
       agreedToTerms : true
     });
-    assert.equal(fieldsState['.mailingAddress'].$presence, PRESENCE.OPTIONAL);
+    assert.equal(fieldsState['.mailingAddress'].$presence, Presence.OPTIONAL);
   });
 
 });

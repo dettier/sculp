@@ -6,7 +6,7 @@
 import { assert } from 'chai';
 import capitalize from 'underscore.string/capitalize';
 
-import { validate, TYPE, PRESENCE } from '../lib/index';
+import { validate, Type, Presence } from '../lib/index';
 
 ////////////////////////////////////////////////////////////////////////////////
 // REQUIRES : END
@@ -16,11 +16,11 @@ describe('Transform and compute functions:', function () {
 
   it('should calculate transforms', function () {
     const scheme = {
-      type : TYPE.OBJECT,
-      $presence : PRESENCE.REQUIRED,
+      type : Type.OBJECT,
+      $presence : Presence.REQUIRED,
       properties : {
         name : {
-          type : TYPE.STRING,
+          type : Type.STRING,
           transform : [
             (v) => v && v.split(' '),
             (v) => v && v.map(capitalize),
@@ -39,16 +39,16 @@ describe('Transform and compute functions:', function () {
 
   it('should calculate computes', function () {
     const scheme = {
-      type : TYPE.OBJECT,
+      type : Type.OBJECT,
       properties : {
         firstname : {
-          type : TYPE.STRING
+          type : Type.STRING
         },
         lastname : {
-          type : TYPE.STRING
+          type : Type.STRING
         },
         fullnameUpper : {
-          type : TYPE.STRING,
+          type : Type.STRING,
           compute : [
             (fa) => `${fa('^.firstname') || ''} ${fa('^.lastname') || ''}`,
             (fa) => fa() && fa().trim(),
@@ -81,7 +81,7 @@ describe('Transform and compute functions:', function () {
 
   it('should calculate transforms only once', function () {
     const scheme = {
-      type : TYPE.NUMBER,
+      type : Type.NUMBER,
       transform : (v) => v + 1
     };
     assert.deepEqual(validate(-1, scheme), 0);
@@ -91,7 +91,7 @@ describe('Transform and compute functions:', function () {
 
   it('should calculate transforms before computes', function () {
     const scheme = {
-      type : TYPE.NUMBER,
+      type : Type.NUMBER,
       transform : (v) => v + 1,
       compute : (fa) => 0 - fa()
     };
