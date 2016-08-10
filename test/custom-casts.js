@@ -3,40 +3,50 @@
 // REQUIRES : BEGIN
 ////////////////////////////////////////////////////////////////////////////////
 
+import isNaN from 'lodash-compat/lang/isNaN';
+import isNumber from 'lodash-compat/lang/isNumber';
 import { assert } from 'chai';
 
 import { validate } from '../src/index';
-import { Presence } from '../src/enums';
+import { CAST_ERROR, Presence } from '../src/enums';
 
 ////////////////////////////////////////////////////////////////////////////////
 // REQUIRES : END
 ////////////////////////////////////////////////////////////////////////////////
 
-const MY_CUSTOM_TYPE = 'MY_CUSTOM_TYPE';
+const INTEGER = 'INTEGER';
 
 describe('Custom casts:', function () {
 
   const scheme = {
-    type : MY_CUSTOM_TYPE,
+    type : INTEGER,
     $presence : Presence.REQUIRED
   };
 
   it('should throw if custom cast is not registered', function () {
-    assert.throws(() => validate(5, scheme), 'Unknown type MY_CUSTOM_TYPE');
+    assert.throws(() => validate(5, scheme), 'Unknown type INTEGER');
   });
 
   it('should use custom cast if it\'s provided', function () {
 
     const options = {
       casts : {
-        [MY_CUSTOM_TYPE] (v) {
-          return v + 1;
+        [INTEGER] (v) {
+          v = v - 0;
+          if (isNumber(v) && !isNaN(v) && v === Math.round(v))
+            return v;
+          return CAST_ERROR;
         }
       }
     };
 
-    const result = validate(5, scheme, options);
-    assert.equal(result, 6);
+    assert.equal(validate(5, scheme, options), 5);
+    assert.equal(validate('5', scheme, options), 5);
+
+    assert.throws(() => validate(5.5, scheme, options),
+      'сouldn\'t cast value to type INTEGER');
+    assert.throws(() => validate('5.5', scheme, options),
+      'сouldn\'t cast value to type INTEGER');
   });
 
   it('should use custom strict cast if it\'s provided', function () {
@@ -44,14 +54,20 @@ describe('Custom casts:', function () {
     const options = {
       strict : true,
       castsStrict : {
-        [MY_CUSTOM_TYPE] (v) {
-          return v + 1;
+        [INTEGER] (v) {
+          if (isNumber(v) && v === Math.round(v))
+            return v;
+          return CAST_ERROR;
         }
       }
     };
 
-    const result = validate(5, scheme, options);
-    assert.equal(result, 6);
+    assert.equal(validate(5, scheme, options), 5);
+
+    assert.throws(() => validate(5.5, scheme, options),
+      'сouldn\'t cast value to type INTEGER');
+    assert.throws(() => validate('5', scheme, options),
+      'сouldn\'t cast value to type INTEGER');
   });
 
 });
