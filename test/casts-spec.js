@@ -5,8 +5,8 @@
 
 import { assert } from 'chai';
 
-import CASTS from '../lib/casts';
-import { Type, CAST_ERROR } from '../lib/enums';
+import CASTS from '../src/casts';
+import { Type, CAST_ERROR } from '../src/enums';
 
 const { STRING, STRING_NET, NUMBER, DATE, BOOLEAN, FUNCTION } = Type;
 

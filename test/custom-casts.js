@@ -5,8 +5,8 @@
 
 import { assert } from 'chai';
 
-import { validate } from '../lib/index';
-import { Presence } from '../lib/enums';
+import { validate } from '../src/index';
+import { Presence } from '../src/enums';
 
 ////////////////////////////////////////////////////////////////////////////////
 // REQUIRES : END

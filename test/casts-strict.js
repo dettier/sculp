@@ -5,7 +5,7 @@
 
 import { assert } from 'chai';
 
-import { validate, Type } from '../lib/index';
+import { validate, Type } from '../src/index';
 const { STRING, STRING_NET, NUMBER, DATE, BOOLEAN, FUNCTION } = Type;
 
 ////////////////////////////////////////////////////////////////////////////////

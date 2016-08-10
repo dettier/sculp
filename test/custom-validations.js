@@ -6,8 +6,8 @@
 import { assert } from 'chai';
 import startsWith from 'underscore.string/startsWith';
 
-import { validate } from '../lib/index';
-import { Type } from '../lib/enums';
+import { validate } from '../src/index';
+import { Type } from '../src/enums';
 
 ////////////////////////////////////////////////////////////////////////////////
 // REQUIRES : END

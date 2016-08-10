@@ -6,8 +6,8 @@
 import chai from 'chai';
 const assert = chai.assert;
 
-import { validate } from '../lib/index';
-import { Type, Presence } from '../lib/enums';
+import { validate } from '../src/index';
+import { Type, Presence } from '../src/enums';
 
 ////////////////////////////////////////////////////////////////////////////////
 // REQUIRES : END

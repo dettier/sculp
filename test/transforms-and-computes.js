@@ -6,7 +6,7 @@
 import { assert } from 'chai';
 import capitalize from 'underscore.string/capitalize';
 
-import { validate, Type, Presence } from '../lib/index';
+import { validate, Type, Presence } from '../src/index';
 
 ////////////////////////////////////////////////////////////////////////////////
 // REQUIRES : END

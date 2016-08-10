@@ -5,7 +5,7 @@
 
 import { assert } from 'chai';
 
-import { validate, Type, Presence } from '../lib/index';
+import { validate, Type, Presence } from '../src/index';
 
 ////////////////////////////////////////////////////////////////////////////////
 // REQUIRES : END

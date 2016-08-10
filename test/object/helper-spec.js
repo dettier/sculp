@@ -10,7 +10,7 @@ import {
   getValue,
   setValue,
   hasGetValue
-} from '../../lib/object/helper';
+} from '../../src/object/helper';
 
 ////////////////////////////////////////////////////////////////////////////////
 // REQUIRES : END

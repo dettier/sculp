@@ -6,7 +6,7 @@
 import { assert } from 'chai';
 import scheme from './sculp-scheme';
 
-import { tryValidate, validate, ValidationError, Presence } from '../lib/index';
+import { tryValidate, validate, ValidationError, Presence } from '../src/index';
 
 ////////////////////////////////////////////////////////////////////////////////
 // REQUIRES : END

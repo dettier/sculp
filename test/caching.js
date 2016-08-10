@@ -5,7 +5,7 @@
 
 import { assert } from 'chai';
 
-import { Sculp, Type, Presence } from '../lib/index';
+import { Sculp, Type, Presence } from '../src/index';
 
 const { OPTIONAL, ABSENT } = Presence;
 
