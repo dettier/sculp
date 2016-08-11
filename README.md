@@ -143,7 +143,7 @@ Any additional information that you want to attach to this value/field.
 Can be defined for `Type.NUMBER`. Truncates the value to specified precision. 
 
 ### `valid`
-If any validation (other than type validation) fails on this field value will be replaced by `valid` value if it is defined.
+If any validation (other than type validation) fails on this field value, will be replaced by `valid` value if it is defined.
 
 ### `initial`
 Provide initial value. You can get initial value for whole scheme with `getInitial(scheme)` function.
@@ -151,7 +151,7 @@ Provide initial value. You can get initial value for whole scheme with `getIniti
 ### `removeEmpty`
 Used for `Type.ARRAY`, `Type.OBJECT` and `Type.GROUP` only. Overrides `removeEmpty` option for this value/field.
 If `removeEmpty` is true empty objects and arrays are removed.
-Default `removeEmpty` option value is `false`.
+Default value is `false`.
 
 ### `properties`
 Used for `Type.OBJECT` and `Type.GROUP` only.
@@ -161,16 +161,16 @@ The value should be an object that provides schemes for available properties in 
 Used for `Type.ARRAY` only. The value should be a scheme for array items.
 
 ### `transform`
-The function or array of function to transform value (e.g. convert string to lowercase).
+A function or array of functions to transform value (e.g. convert string to lowercase).
 Those functions take current value as an argument and should return transformed value.
 
 ### `compute`
-The function/array of function to compute value (e.g. set object field value to some value derived on the values of other fields).
+A function of array of functions to compute value (e.g. set object field value to some value derived on the values of other fields).
 Those functions take [field accessor function](#field-accessor-functions) as an argument and should return computed value.
 
 ### `$...` validation rule properties
 All scheme properties that start with `$` are validation rules. There are several predefined validations, and you can provide your custom validations using options or defining `$custom` validation.
-Any validation rule expects some rule value than value will be validated against. For example for `$values` rule value is expected to be an array of possible values (`{ $values : [ 1, 2, 3 ] }`).
+Any validation rule expects some rule value that value will be validated against. For example for `$values` rule value is expected to be an array of possible values (`{ $values : [ 1, 2, 3 ] }`).
 The value `$...` property should be a rule value or a function computing rule value.
 
 Example:
@@ -201,7 +201,7 @@ Available validations:
 
 * `$presence` Validates value presence. Available rule values are `Presence.REQUIRED`, `Presence.OPTIONAL` and `Presence.ABSENT`.
 * `$values` Validates that value is one of provided values. Rule value should be an array.
-* `$regexp` Validates that value matches regular expression. Rule value should be an string or RegExp.
+* `$regexp` Validates that value matches regular expression. Rule value should be a string or RegExp.
 * `$length` Validates length of a value. Can be used for strings and arrays. Rule value is a number for exact length or an object with `min` and/or `max` properties for providing min and max limits (e.g. `$length : { min : 1, max : 10 }`). 
 * `$lengthmin` Validates that value.length >= rule value. Can be used for strings and arrays.
 * `$lengthmax` Validates that value.length <= rule value. Can be used for strings and arrays.
@@ -212,7 +212,7 @@ Available validations:
 * `$lt` Validates that number value < rule value.
 
 ### `$custom` custom validation rule
-The `$custom` property value should be a function that should return error message string when validation fails and `undefined` otherwise.
+The `$custom` property value should be a function that returns error message string when validation fails and `undefined` otherwise.
 Function takes [field accessor function](#field-accessor-functions) as a first argument.
 
 Example:
@@ -451,8 +451,8 @@ Field accessor is a function that is passed to rule value functions and `compute
 
 Field accessor usage:
 ```js
-fieldAccessor(); // return value of current field
-fieldAccessor('.prop'); // returns field 'prop' of current value
+fieldAccessor(); // returns value of current field
+fieldAccessor('.prop'); // returns field 'prop' of current field
 fieldAccessor('^.prop'); // returns field 'prop' of parent value
 fieldAccessor('^^.prop'); // returns field 'prop' of root value
 ```
@@ -487,12 +487,12 @@ If you need to set options application-wide use `setDefaultOptions` function.
 
 #### `lang`
 Sets the language for error messages. Only English (`'en'`) and Russian (`'ru'`) languages are supported right now.
-Default value `en`.
+Default value is `en`.
 
 #### `strict`
 By default Sculp will try to cast value to required type. For example it will return 42 when validating string '42' with { type : Type.NUMBER } scheme.
-If you don't want for Sculp to try to cast values to required types you can set `strict` option to `true`.
-Default value `false`. 
+If you don't want Sculp to try to cast values to required types you can set `strict` option to `true`.
+Default value is `false`. 
  
 #### `casts` and `castsStrict`
 Option for providing casts for custom types. See [Custom types and validations](#custom-types-and-validations).
@@ -506,7 +506,7 @@ Custom types are provided with `casts` and `castsStrict` options.
 You should provide a cast function for each custom type. If value is not of your custom type your cast function should return special CAST_ERROR value.
 `casts` option is used for `strict = false` (default value) validations and `castsStrict` is used when `strict = true`.
 
-Custom validations are provided with `validations` option. Validation function takes field accessor as first argument and validation rule value as second. Validation function should return error message string when validation fails and otherwise `undefined`.
+Custom validations are provided with `validations` option. Validation function takes field accessor as first argument and validation rule value as second. Validation function should return error message string when validation fails and `undefined` otherwise.
 
 Example:
 ```js
