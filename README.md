@@ -66,7 +66,7 @@ This example schema defines the following constraints:
     * should be defined
 * `gender` property
     * should be string
-    * will be converted to lowercase
+    * will be trimmed and converted to lowercase
     * should be one of 2 values ("male", "female")
 * `age` property
     * should be not negative
