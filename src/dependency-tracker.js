@@ -35,15 +35,12 @@ class DependencyTracker {
   }
 
   _addDependencies (field, result) {
-    if (result.indexOf(field) >= 0)
-      return;
-
-    result.push(field);
-
     const deps = Object.keys(this.deps[field] || {});
 
-    for (let i = 0; i < deps.length; i++)
+    for (let i = 0; i < deps.length; i++) {
+      result.push(deps[i]);
       this._addDependencies(deps[i], result);
+    }
   }
 
 

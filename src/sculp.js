@@ -2,13 +2,17 @@
 // REQUIRES : BEGIN
 ////////////////////////////////////////////////////////////////////////////////
 
+import isObject from 'lodash-compat/lang/isObject';
+import isArray from 'lodash-compat/lang/isArray';
+import forOwn from 'lodash-compat/object/forOwn';
+import each from 'lodash-compat/collection/each';
 import omit from 'lodash-compat/object/omit';
 import keys from 'lodash-compat/object/keys';
 import filter from 'lodash-compat/collection/filter';
 
 import _validate, { PRESENCE_RULE_NAME } from './validate';
 import { setValue } from './object/helper';
-import { isSubfield } from './helper';
+import { getParentPathsMemoized } from './helper';
 
 import { setLanguage } from './i18n/lang';
 import { currentDefaultOptions } from './options';
@@ -83,29 +87,6 @@ class Sculp {
   }
 
   //////////////////////////////////////////////////////////////////////////////
-  // _clearCacheOnFieldsChange
-  //////////////////////////////////////////////////////////////////////////////
-
-  _clearCacheOnFieldsChange (fieldsChanged) {
-    fieldsChanged.forEach((p) => {
-      const allPaths = Object.keys(this.CACHE);
-      for (let i = 0; i < allPaths.length; i++) {
-        const key = allPaths[i];
-        if (key === p || isSubfield(key, p) || isSubfield(p, key)) {
-          delete this.CACHE[key];
-          // если в этом поле были ошибки, мы должны удалить их из ERRORS_CACHE
-          if (this.FIELDS_STATE_CACHE[key].errorsCount > 0) {
-            const newErrors = filter(this.ERRORS_CACHE, (error) => error.field !== key);
-            this.ERRORS_CACHE.splice(0, this.ERRORS_CACHE.length, ...newErrors);
-          }
-          delete this.FIELDS_STATE_CACHE[key];
-          this.dependencyTracker.clearDependencies(key);
-        }
-      }
-    });
-  }
-
-  //////////////////////////////////////////////////////////////////////////////
   // setField
   //////////////////////////////////////////////////////////////////////////////
 
@@ -116,17 +97,86 @@ class Sculp {
   }
 
   //////////////////////////////////////////////////////////////////////////////
-  // getNecessaryChangesComparingWithCache
+  // _getNecessaryChangesComparingWithCache
   //////////////////////////////////////////////////////////////////////////////
   /**
-   * Функция из объекта с новыми значениями полей уберает все
-   * значения, которые равны текущим значениям. Возвращает новый объект.
-   * @param {Object} fieldChanges новые значения полей
+   * Filters changes object removing paths which new values are
+   * equal to current values.
+   * @param {Object} fieldChanges changes with new values
    */
-  getNecessaryChangesComparingWithCache (fieldChanges) {
+  _getNecessaryChangesComparingWithCache (fieldChanges) {
     return omit(fieldChanges, (value, key) => {
       return this.CACHE.hasOwnProperty(key) && value === this.CACHE[key];
     });
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
+  // _getFieldsToInvalidateForField
+  //////////////////////////////////////////////////////////////////////////////
+
+  _getFieldsToInvalidateForField (field, result, invalidateSubfields = true) {
+
+    // already done
+    if (result[field] === 1)
+      return;
+
+    result[field] = 1;
+
+    // dependencies
+    each(this.dependencyTracker.getDependencies(field), (path) =>
+      this._getFieldsToInvalidateForField(path, result));
+
+    // parents
+    each(getParentPathsMemoized(field), (path) =>
+      this._getFieldsToInvalidateForField(path, result, false));
+
+    // subfields
+    if (invalidateSubfields) {
+      const val = this.CACHE[field];
+      if (isArray(val)) {
+        each(val, (v, i) =>
+          this._getFieldsToInvalidateForField(`${field}[${i}]`, result));
+      } else if (isObject(val)) {
+        forOwn(val, (v, k) =>
+          this._getFieldsToInvalidateForField(`${field}.${k}`, result));
+      }
+    }
+
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
+  // _clearCacheForFields
+  //////////////////////////////////////////////////////////////////////////////
+
+  _clearCacheForFields (fields) {
+    each(fields, (path) => {
+      // if this path is not in cache
+      if (this.CACHE.hasOwnProperty(path) === false)
+        return;
+
+      delete this.CACHE[path];
+
+      // is this field have errors we should remove them from ERRORS_CACHE
+      if (this.FIELDS_STATE_CACHE[path].errorsCount > 0) {
+        const newErrors = filter(this.ERRORS_CACHE, (error) => error.field !== path);
+        this.ERRORS_CACHE.splice(0, this.ERRORS_CACHE.length, ...newErrors);
+      }
+
+      delete this.FIELDS_STATE_CACHE[path];
+      this.dependencyTracker.clearDependencies(path);
+    });
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
+  // _getFieldsToInvalidate
+  //////////////////////////////////////////////////////////////////////////////
+
+  _getFieldsToInvalidate (changes) {
+    const result = {};
+    const paths = keys(changes);
+    each(paths, (p) =>
+      this._getFieldsToInvalidateForField(p, result));
+    return keys(result);
   }
 
   //////////////////////////////////////////////////////////////////////////////
@@ -134,7 +184,7 @@ class Sculp {
   //////////////////////////////////////////////////////////////////////////////
 
   setFields (fields) {
-    fields = this.getNecessaryChangesComparingWithCache(fields);
+    fields = this._getNecessaryChangesComparingWithCache(fields);
 
     const paths = keys(fields);
 
@@ -145,16 +195,10 @@ class Sculp {
     } else {
       debug('clearing cache');
 
-      const deps = this.dependencyTracker.getDependencies(paths);
+      const fieldsToInvalidate = this._getFieldsToInvalidate(fields);
+      this._clearCacheForFields(fieldsToInvalidate);
 
-      paths.forEach(path => {
-        if (deps.indexOf(path) === -1)
-          deps.push(path);
-      });
-
-      this._clearCacheOnFieldsChange(deps);
-
-      debug('cache cleared %j', deps);
+      debug('cache cleared %j', fieldsToInvalidate);
     }
 
     paths.forEach(path =>

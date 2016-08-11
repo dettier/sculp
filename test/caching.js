@@ -29,22 +29,28 @@ describe('Results caching and reuse:', function () {
           name : { type : Type.STRING },
           age : { type : Type.NUMBER }
         }
+      },
+      spouseName : {
+        type : Type.STRING,
+        compute : (fa) => fa('^^.spouse.name')
       }
     }
   };
 
-  const value = {
-    name : 'John',
-    age : 25,
-    married : true,
-    spouse : {
-      name : 'Anna',
-      age : 20
-    }
-  };
+  beforeEach(function () {
+    this.value = {
+      name : 'John',
+      age : 25,
+      married : true,
+      spouse : {
+        name : 'Anna',
+        age : 20
+      }
+    };
+  });
 
   it('should return the same object on re-validation', function () {
-    const sculp = new Sculp(value, scheme);
+    const sculp = new Sculp(this.value, scheme);
 
     const result = sculp.validate();
     assert.strictEqual(sculp.validate(), result);
@@ -55,7 +61,7 @@ describe('Results caching and reuse:', function () {
   });
 
   it('should return new object on re-validation after field change', function () {
-    const sculp = new Sculp(value, scheme);
+    const sculp = new Sculp(this.value, scheme);
 
     const result = sculp.validate();
     sculp.setField('.age', result.age + 1);
@@ -65,7 +71,7 @@ describe('Results caching and reuse:', function () {
 
   it('should reuse the same subfield value after field change that subfield does not depend on',
   function () {
-    const sculp = new Sculp(value, scheme);
+    const sculp = new Sculp(this.value, scheme);
 
     const result = sculp.validate();
     sculp.setField('.age', result.age + 1);
@@ -76,7 +82,7 @@ describe('Results caching and reuse:', function () {
 
   it('should not reuse subfield value after field change that subfield depends on',
   function () {
-    const sculp = new Sculp(value, scheme);
+    const sculp = new Sculp(this.value, scheme);
 
     const result = sculp.validate();
     sculp.setField('.married', false);
@@ -84,6 +90,19 @@ describe('Results caching and reuse:', function () {
 
     assert.deepEqual(sculp.validate().spouse, result.spouse);
     assert.notStrictEqual(sculp.validate().spouse, result.spouse);
+  });
+
+  it('should clear internal cache for fields if their dependencies change', function () {
+
+    const sculp = new Sculp(this.value, scheme);
+    sculp.validate();
+
+    assert.equal(sculp.CACHE['.spouseName'], 'Anna');
+
+    sculp.setField('.married', false);
+
+    assert.notProperty(sculp.CACHE, '.spouse');
+    assert.notProperty(sculp.CACHE, '.spouseName');
   });
 
 });
