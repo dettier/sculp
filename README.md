@@ -40,10 +40,10 @@ Compared to other object validation libraries Sculp provides unique features suc
 * [Field state object](#field-state-object)
 
 ## Features
-* **Declarative scheme**. Schemes are simple objects, with a very easy to read structure. This means you can reuse them, clone them, extend them, and do with them whatever you want.
-* **Support for custom types and validation rules**. Any crazy rules you need. Array should be of odd length and it's items should start with an underscore? No problem.
-* **Conditional rules**. Some field is present only if this checkbox field is on? No problem.
-* **Fast incremental validation**. You need to validate some gigantic form on the fly while user editing it? Incremental validation ensures that only necessary fields and validation rules are recalculated.
+* **Declarative scheme**. Schemes are simple objects, with a very easy-to-read structure. This means you can reuse them, clone them, extend them, and do with them whatever you want.
+* **Support for custom types and validation rules**. Any crazy rules you need. Array should be of odd length and its items should start with an underscore? No problem.
+* **Conditional rules**. Some field is present only if some checkbox field is on? No problem.
+* **Fast incremental validation**. You need to validate some gigantic form on the fly while user is editing it? Incremental validation ensures that only necessary fields and validation rules are recalculated.
 * **Object structure reuse**. Shallow compare is all you need to know if your objects or validation rules have changed after last user update. This makes this library very React-friendly.
 
 ## Installation
@@ -261,6 +261,7 @@ validate(value: any, scheme: object, ?options: object): any
 ```
 
 Validates `value` with `scheme` and returns validated value or throws `ValidationError` when validation fails. Takes [options](#options) as an optional argument.
+
 Example:
 ```js
 validate('valid str', { type : Type.STRING, $length : 9 }, { strict : true });
@@ -314,6 +315,7 @@ setDefaultOptions(options: object): undefined
 ```
 
 Sets application-wide default [options](#options) for `validate` and `tryValidate` methods as well as `Sculp` constructor.
+
 Example:
 ```js
 setDefaultOptions({
@@ -332,6 +334,7 @@ Sculp(value: any, scheme: object, ?options: object): undefined
 
 Constructs new `Sculp` instance.
 Sculp instance allows you to perform fast incremental validations on your value when it changes. Takes [options](#options) as an optional argument.
+
 Example:
 ```js
 const value = { ... };
@@ -377,6 +380,7 @@ Sculp.prototype.getValue(): any
 ```
 
 Returns current value.
+
 Example:
 ```js
 const sculp =  new Sculp({ field : 1 }, scheme);
@@ -390,6 +394,7 @@ Sculp.prototype.setValue(newValue: any): undefined
 ```
 
 Replaces current value and clears all internal Sculp instance caches.
+
 Example:
 ```js
 const sculp =  new Sculp({ field : 1 }, scheme);
@@ -407,6 +412,7 @@ Sculp.prototype.setFields(values: object): undefined
 Mutates current value according to provided parameters.
 `setField` mutates one field, `setFields` can mutate several fields at once.
 *Note that `path` parameter and `values` keys for mutating fields must start with a dot (i.e. `'.field'` and `{ '.field' : newValue }`).*
+
 Example:
 ```js
 const sculp =  new Sculp({ list : [ {} ] }, scheme);
@@ -431,6 +437,7 @@ Sculp.prototype.getFieldPresence(path: string): string
 ```
 
 When you need to get value of some scheme definition property or validation rule you can use `getSchemeValue` method. Useful to get values of conditional rules. For example, if you have conditional `$presence` rule for some field you can get current presence with `getSchemeValue(path, '$presence')`.
+
 Example:
 ```js
 const sculp =  new Sculp(value, scheme);
