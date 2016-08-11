@@ -451,7 +451,9 @@ Sets the language for error messages. Only English (`'en'`) and Russian (`'ru'`)
 Default value `en`.
 
 #### `strict`
-Default value `false`.
+By default Sculp will try to cast value to required type. For example it will return 42 when validating string '42' with { type : Type.NUMBER } scheme.
+If you don't want for Sculp to try to cast values to required types you can set `strict` option to `true`.
+Default value `false`. 
  
 #### `casts` and `castsStrict`
 Option for providing casts for custom types. See [Custom types and validations](#custom-types-and-validations).
@@ -462,7 +464,8 @@ Option for providing custom validations. See [Custom types and validations](#cus
 ## Custom types and validations
 
 Custom types are provided with `casts` and `castsStrict` options.
-You should provide a cast function for your custom type. If value is not of your custom type you should return special CAST_ERROR value.
+You should provide a cast function for each custom type. If value is not of your custom type your cast function should return special CAST_ERROR value.
+`casts` option is used for `strict = false` (default value) validations and `castsStrict` is used when `strict = true`.
 
 Custom validations are provided with `validations` option. Validation function takes field accessor as first argument and validation rule value as second. Validation function should return error message string when validation fails and otherwise `undefined`.
 
