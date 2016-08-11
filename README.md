@@ -44,7 +44,7 @@ Compared to other object validation libraries Sculp provides unique features suc
 * **Support for custom types and validation rules**. Any crazy rules you need. Array should be of odd length and its items should start with an underscore? No problem.
 * **Conditional rules**. Some field is present only if some checkbox field is on? No problem.
 * **Fast incremental validation**. You need to validate some gigantic form on the fly while user is editing it? Incremental validation ensures that only necessary fields and validation rules are recalculated.
-* **Object structure reuse**. Shallow compare is all you need to know if your objects or validation rules have changed after last user update. This makes this library very React-friendly.
+* **Object structure reuse**. To find out if your objects or validation rules have changed after last update by user, all you need is strict comparison. This makes this library very React-friendly.
 
 ## Installation
 
