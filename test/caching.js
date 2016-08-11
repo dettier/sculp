@@ -94,15 +94,20 @@ describe('Results caching and reuse:', function () {
 
   it('should clear internal cache for fields if their dependencies change', function () {
 
+    delete this.value.spouse.age;
     const sculp = new Sculp(this.value, scheme);
     sculp.validate();
 
     assert.equal(sculp.CACHE['.spouseName'], 'Anna');
+    assert.property(sculp.CACHE, '.spouse');
+    assert.property(sculp.CACHE, '.spouseName');
+    assert.property(sculp.CACHE, '.spouse.age');
 
     sculp.setField('.married', false);
 
     assert.notProperty(sculp.CACHE, '.spouse');
     assert.notProperty(sculp.CACHE, '.spouseName');
+    assert.notProperty(sculp.CACHE, '.spouse.age');
   });
 
 });

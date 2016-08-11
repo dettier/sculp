@@ -2,17 +2,18 @@
 // REQUIRES : BEGIN
 ////////////////////////////////////////////////////////////////////////////////
 
-import isObject from 'lodash-compat/lang/isObject';
-import isArray from 'lodash-compat/lang/isArray';
 import forOwn from 'lodash-compat/object/forOwn';
 import each from 'lodash-compat/collection/each';
 import omit from 'lodash-compat/object/omit';
 import keys from 'lodash-compat/object/keys';
 import filter from 'lodash-compat/collection/filter';
+import memoize from 'lodash-compat/function/memoize';
+
+import { Type } from './enums';
 
 import _validate, { PRESENCE_RULE_NAME } from './validate';
 import { setValue } from './object/helper';
-import { getParentPathsMemoized } from './helper';
+import { getParentPathsMemoized, getSubScheme } from './helper';
 
 import { setLanguage } from './i18n/lang';
 import { currentDefaultOptions } from './options';
@@ -59,6 +60,7 @@ class Sculp {
   _init (value, scheme) {
     this.scheme = scheme;
     this.value = value;
+    this.getSubScheme = memoize(this.getSubScheme);
 
     if (this.options.disableDependencyTracking !== true)
       this.dependencyTracker = new DependencyTracker();
@@ -111,37 +113,55 @@ class Sculp {
   }
 
   //////////////////////////////////////////////////////////////////////////////
-  // _getFieldsToInvalidateForField
+  // _getSchemeForPath
   //////////////////////////////////////////////////////////////////////////////
 
-  _getFieldsToInvalidateForField (field, result, invalidateSubfields = true) {
+  getSubScheme (path) {
+    return getSubScheme(this.scheme, path);
+  }
 
-    // already done
-    if (result[field] === 1)
+  //////////////////////////////////////////////////////////////////////////////
+  // _clearCacheForField
+  //////////////////////////////////////////////////////////////////////////////
+
+  _clearCacheForField (path, scheme = this.getSubScheme(path),
+                       invalidateSubfields = true) {
+
+    // if this path is not in cache
+    if (this.CACHE.hasOwnProperty(path) === false)
       return;
 
-    result[field] = 1;
+    const val = this.CACHE[path];
+    delete this.CACHE[path];
 
-    // dependencies
-    each(this.dependencyTracker.getDependencies(field), (path) =>
-      this._getFieldsToInvalidateForField(path, result));
+    // is this field have errors we should remove them from ERRORS_CACHE
+    if (this.FIELDS_STATE_CACHE[path].errorsCount > 0) {
+      const newErrors = filter(this.ERRORS_CACHE, (error) => error.field !== path);
+      this.ERRORS_CACHE.splice(0, this.ERRORS_CACHE.length, ...newErrors);
+    }
 
-    // parents
-    each(getParentPathsMemoized(field), (path) =>
-      this._getFieldsToInvalidateForField(path, result, false));
+    delete this.FIELDS_STATE_CACHE[path];
 
-    // subfields
+    // clear dependencies
+    each(this.dependencyTracker.getDependencies(path), (p) =>
+      this._clearCacheForField(p));
+
+    // clear parents
+    each(getParentPathsMemoized(path), (p) =>
+      this._clearCacheForField(p, false));
+
+    // clear subfields
     if (invalidateSubfields) {
-      const val = this.CACHE[field];
-      if (isArray(val)) {
-        each(val, (v, i) =>
-          this._getFieldsToInvalidateForField(`${field}[${i}]`, result));
-      } else if (isObject(val)) {
-        forOwn(val, (v, k) =>
-          this._getFieldsToInvalidateForField(`${field}.${k}`, result));
+      if (scheme.type === Type.ARRAY) {
+        this._clearCacheForField(`${path}.items`, scheme.items);
+        each(val, (v, i) => this._clearCacheForField(`${path}[${i}]`, scheme.items));
+      } else if (scheme.type === Type.OBJECT || scheme.type === Type.GROUP) {
+        forOwn(scheme.properties, (v, k) =>
+          this._clearCacheForField(`${path}.${k}`, v));
       }
     }
 
+    this.dependencyTracker.clearDependencies(path);
   }
 
   //////////////////////////////////////////////////////////////////////////////
@@ -149,34 +169,8 @@ class Sculp {
   //////////////////////////////////////////////////////////////////////////////
 
   _clearCacheForFields (fields) {
-    each(fields, (path) => {
-      // if this path is not in cache
-      if (this.CACHE.hasOwnProperty(path) === false)
-        return;
-
-      delete this.CACHE[path];
-
-      // is this field have errors we should remove them from ERRORS_CACHE
-      if (this.FIELDS_STATE_CACHE[path].errorsCount > 0) {
-        const newErrors = filter(this.ERRORS_CACHE, (error) => error.field !== path);
-        this.ERRORS_CACHE.splice(0, this.ERRORS_CACHE.length, ...newErrors);
-      }
-
-      delete this.FIELDS_STATE_CACHE[path];
-      this.dependencyTracker.clearDependencies(path);
-    });
-  }
-
-  //////////////////////////////////////////////////////////////////////////////
-  // _getFieldsToInvalidate
-  //////////////////////////////////////////////////////////////////////////////
-
-  _getFieldsToInvalidate (changes) {
-    const result = {};
-    const paths = keys(changes);
-    each(paths, (p) =>
-      this._getFieldsToInvalidateForField(p, result));
-    return keys(result);
+    each(fields, (path) =>
+      this._clearCacheForField(path));
   }
 
   //////////////////////////////////////////////////////////////////////////////
@@ -195,10 +189,9 @@ class Sculp {
     } else {
       debug('clearing cache');
 
-      const fieldsToInvalidate = this._getFieldsToInvalidate(fields);
-      this._clearCacheForFields(fieldsToInvalidate);
+      this._clearCacheForFields(paths);
 
-      debug('cache cleared %j', fieldsToInvalidate);
+      debug('cache cleared %j', paths);
     }
 
     paths.forEach(path =>
