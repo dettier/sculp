@@ -7,6 +7,38 @@ Sculp is a library that will help you cast and/or validate input data according 
 
 Compared to other object validation libraries Sculp provides unique features such as conditional validation rules, incremental validation and object structure reuse.  
 
+## TOC
+* [Features](#features)
+* [Installation](#installation)
+* [Example](#example)
+* [Scheme structure](#scheme-structure)
+* [API](#api)
+    * [Static functions](#static-functions)
+        + [`validate()`](#validate)
+        + [`tryValidate()`](#tryvalidate)
+        + [`getSchemeValue()`](#getschemevalue-getfieldname-getfieldpresence)
+        + [`getFieldName()`](#getschemevalue-getfieldname-getfieldpresence)
+        + [`getFieldPresence()`](#getschemevalue-getfieldname-getfieldpresence)
+        + [`getInitial()`](#getinitial)
+        + [`getSubScheme()`](#getsubscheme)
+        + [`setDefaultOptions()`](#setdefaultoptions)
+    * [Sculp class](#sculp-class)
+        + [`constructor()`](#constructor)
+        + [`validate()`](#validate-1)
+        + [`tryValidate()`](#tryvalidate-1)
+        + [`getValue()`](#getvalue)
+        + [`setValue()`](#setvalue)
+        + [`setField()`](#setfield-setfields)
+        + [`setFields()`](#setfield-setfields)
+        + [`getFieldState()`](#getfieldstate)
+        + [`getSchemeValue()`](#getschemevalue-getfieldname-getfieldpresence-1)
+        + [`getFieldName()`](#getschemevalue-getfieldname-getfieldpresence-1)
+        + [`getFieldPresence()`](#getschemevalue-getfieldname-getfieldpresence-1)
+    * [Field accessor functions](#field-accessor-functions)
+    * [Options](#options)
+* [Custom types and validations](#custom-types-and-validations)
+* [Field state object](#field-state-object)
+
 ## Features
 * **Declarative scheme**. Schemes are simple objects, with a very easy to read structure. This means you can reuse them, clone them, extend them, and do with them whatever you want.
 * **Support for custom types and validation rules**. Any crazy rules you need. Array should be of odd length and it's items should start with an underscore? No problem.
