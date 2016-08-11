@@ -143,7 +143,7 @@ Any additional information that you want to attach to this value/field.
 Can be defined for `Type.NUMBER`. Truncates the value to specified precision. 
 
 ### `valid`
-If any validation (other than type validation) fails on this field value, will be replaced by `valid` value if it is defined.
+If any validation (other than type validation) fails on this field, value will be replaced by `valid` value if it is defined.
 
 ### `initial`
 Provide initial value. You can get initial value for whole scheme with `getInitial(scheme)` function.
