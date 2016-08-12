@@ -3,6 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 import startsWith from 'underscore.string/startsWith';
+import endsWith from 'underscore.string/endsWith';
 
 import isEmpty from 'lodash-compat/lang/isEmpty';
 import isString from 'lodash-compat/lang/isString';
@@ -26,30 +27,6 @@ import {
 ////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
-// getSubScheme
-////////////////////////////////////////////////////////////////////////////////
-
-export function getSubScheme (scheme, path = '') {
-
-  path = normalizeMemoized(path);
-
-  path = path.replace(/\.(.)/g, '.properties.$1');
-  path = path.replace(/\[\w*\]/g, '.items');
-
-  return getValue(scheme, path);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// getRunValidationsForSubfields
-////////////////////////////////////////////////////////////////////////////////
-
-export function getRunValidationsForSubfields (scheme, value) {
-  if (scheme.type === Type.GROUP)
-    return true;
-  return value != null;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // parent paths
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -69,6 +46,53 @@ export function getParentPath (path) {
 }
 
 export const getParentPathMemoized = memoize(getParentPath);
+
+////////////////////////////////////////////////////////////////////////////////
+// getSubScheme
+////////////////////////////////////////////////////////////////////////////////
+
+export function getSubScheme (scheme, path = '') {
+
+  path = normalizeMemoized(path);
+
+  path = path.replace(/\.(.)/g, '.properties.$1');
+  path = path.replace(/\[\w*\]/g, '.items');
+
+  return getValue(scheme, path);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// getSubSchemeHandlingPseudoFields
+////////////////////////////////////////////////////////////////////////////////
+
+export function getSubSchemeHandlingPseudoFields (scheme, path = '') {
+
+  const res = getSubScheme(scheme, path);
+
+  if (res != null)
+    return res;
+
+  // path might reference pseudo-path for array item ".array.items"
+  if (path === 'items' || endsWith(path, '.items')) {
+    const parentPath = getParentPathMemoized(path);
+    const parentScheme = getSubScheme(scheme, parentPath);
+    if (parentScheme && parentScheme.type === Type.ARRAY) {
+      return parentScheme.items;
+    }
+  }
+
+  return undefined;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// getRunValidationsForSubfields
+////////////////////////////////////////////////////////////////////////////////
+
+export function getRunValidationsForSubfields (scheme, value) {
+  if (scheme.type === Type.GROUP)
+    return true;
+  return value != null;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // getRunValidationsForPath

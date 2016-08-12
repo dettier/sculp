@@ -221,7 +221,7 @@ export function castArray (value, scheme, path, context) {
 
   const itemScheme = scheme.items;
 
-  // чтобы добавить path.items в fieldState
+  // to add pseudo-path "path.items" into fieldState
   validateField(undefined, itemScheme, `${path}.items`, {
     ...context,
     runValidations : false,

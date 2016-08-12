@@ -13,7 +13,10 @@ import { Type } from './enums';
 
 import _validate, { PRESENCE_RULE_NAME } from './validate';
 import { setValue } from './object/helper';
-import { getParentPathsMemoized, getSubScheme } from './helper';
+import {
+  getParentPathsMemoized,
+  getSubScheme,
+  getSubSchemeHandlingPseudoFields } from './helper';
 
 import { setLanguage } from './i18n/lang';
 import { currentDefaultOptions } from './options';
@@ -124,7 +127,7 @@ class Sculp {
   // _clearCacheForField
   //////////////////////////////////////////////////////////////////////////////
 
-  _clearCacheForField (path, scheme = this.getSubScheme(path),
+  _clearCacheForField (path, scheme,
                        invalidateSubfields = true) {
 
     // if this path is not in cache
@@ -152,12 +155,20 @@ class Sculp {
 
     // clear subfields
     if (invalidateSubfields) {
-      if (scheme.type === Type.ARRAY) {
-        this._clearCacheForField(`${path}.items`, scheme.items);
-        each(val, (v, i) => this._clearCacheForField(`${path}[${i}]`, scheme.items));
-      } else if (scheme.type === Type.OBJECT || scheme.type === Type.GROUP) {
-        forOwn(scheme.properties, (v, k) =>
-          this._clearCacheForField(`${path}.${k}`, v));
+      if (scheme == null)
+        scheme = getSubSchemeHandlingPseudoFields(this.scheme, path);
+
+      if (scheme != null) {
+        if (scheme.type === Type.ARRAY) {
+          // we need to invalidate pseudo-path for array item
+          this._clearCacheForField(`${path}.items`, scheme.items);
+          // invalidating array items
+          each(val, (v, i) => this._clearCacheForField(`${path}[${i}]`, scheme.items));
+        } else if (scheme.type === Type.OBJECT || scheme.type === Type.GROUP) {
+          // invalidating object properties
+          forOwn(scheme.properties, (v, k) =>
+            this._clearCacheForField(`${path}.${k}`, v));
+        }
       }
     }
 

@@ -33,6 +33,10 @@ describe('Results caching and reuse:', function () {
       spouseName : {
         type : Type.STRING,
         compute : (fa) => fa('^^.spouse.name')
+      },
+      children : {
+        type : Type.ARRAY,
+        items : { type : Type.STRING }
       }
     }
   };
@@ -45,7 +49,8 @@ describe('Results caching and reuse:', function () {
       spouse : {
         name : 'Anna',
         age : 20
-      }
+      },
+      children : [ 'Bill' ]
     };
   });
 
@@ -102,12 +107,22 @@ describe('Results caching and reuse:', function () {
     assert.property(sculp.CACHE, '.spouse');
     assert.property(sculp.CACHE, '.spouseName');
     assert.property(sculp.CACHE, '.spouse.age');
+    assert.property(sculp.CACHE, '.children');
+    assert.property(sculp.CACHE, '.children[0]');
+    assert.property(sculp.CACHE, '.children.items');
 
     sculp.setField('.married', false);
 
     assert.notProperty(sculp.CACHE, '.spouse');
     assert.notProperty(sculp.CACHE, '.spouseName');
     assert.notProperty(sculp.CACHE, '.spouse.age');
+
+    sculp.setField('.children', []);
+
+    assert.notProperty(sculp.CACHE, '.children');
+    assert.notProperty(sculp.CACHE, '.children[0]');
+    assert.notProperty(sculp.CACHE, '.children.items');
+
   });
 
 });
