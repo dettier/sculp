@@ -15,7 +15,7 @@ const { OPTIONAL, ABSENT } = Presence;
 
 describe('Results caching and reuse:', function () {
 
-  const scheme = {
+  const schema = {
     type : Type.OBJECT,
     $presence : Presence.REQUIRED,
     properties : {
@@ -55,7 +55,7 @@ describe('Results caching and reuse:', function () {
   });
 
   it('should return the same object on re-validation', function () {
-    const sculp = new Sculp(this.value, scheme);
+    const sculp = new Sculp(this.value, schema);
 
     const result = sculp.validate();
     assert.strictEqual(sculp.validate(), result);
@@ -66,7 +66,7 @@ describe('Results caching and reuse:', function () {
   });
 
   it('should return new object on re-validation after field change', function () {
-    const sculp = new Sculp(this.value, scheme);
+    const sculp = new Sculp(this.value, schema);
 
     const result = sculp.validate();
     sculp.setField('.age', result.age + 1);
@@ -76,7 +76,7 @@ describe('Results caching and reuse:', function () {
 
   it('should reuse the same subfield value after field change that subfield does not depend on',
   function () {
-    const sculp = new Sculp(this.value, scheme);
+    const sculp = new Sculp(this.value, schema);
 
     const result = sculp.validate();
     sculp.setField('.age', result.age + 1);
@@ -87,7 +87,7 @@ describe('Results caching and reuse:', function () {
 
   it('should not reuse subfield value after field change that subfield depends on',
   function () {
-    const sculp = new Sculp(this.value, scheme);
+    const sculp = new Sculp(this.value, schema);
 
     const result = sculp.validate();
     sculp.setField('.married', false);
@@ -100,7 +100,7 @@ describe('Results caching and reuse:', function () {
   it('should clear internal cache for fields if their dependencies change', function () {
 
     delete this.value.spouse.age;
-    const sculp = new Sculp(this.value, scheme);
+    const sculp = new Sculp(this.value, schema);
     sculp.validate();
 
     assert.equal(sculp.CACHE['.spouseName'], 'Anna');

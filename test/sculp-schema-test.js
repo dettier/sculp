@@ -4,7 +4,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 import { assert } from 'chai';
-import scheme from './sculp-scheme';
+import schema from './sculp-schema';
 
 import { tryValidate, validate, ValidationError, Presence } from '../src/index';
 
@@ -12,10 +12,10 @@ import { tryValidate, validate, ValidationError, Presence } from '../src/index';
 // REQUIRES : END
 ////////////////////////////////////////////////////////////////////////////////
 
-describe('Basic validation tests with example scheme', function () {
+describe('Basic validation tests with example schema', function () {
 
   it('empty value passes validation', function () {
-    assert.isUndefined(validate(undefined, scheme));
+    assert.isUndefined(validate(undefined, schema));
   });
 
   it('correct value passes validation', function () {
@@ -25,7 +25,7 @@ describe('Basic validation tests with example scheme', function () {
       agreedToTerms : true
     };
 
-    const result = validate(value, scheme);
+    const result = validate(value, schema);
     assert.deepEqual(result, {
       ...value,
       fullname : 'John Smith'
@@ -39,7 +39,7 @@ describe('Basic validation tests with example scheme', function () {
       agreedToTerms : false
     };
 
-    assert.throws(() => validate(value, scheme), ValidationError);
+    assert.throws(() => validate(value, schema), ValidationError);
   });
 
   it('mailing address should be absent if main address is empty', function () {
@@ -50,7 +50,7 @@ describe('Basic validation tests with example scheme', function () {
       agreedToTerms : true
     };
 
-    const { result, fieldsState } = tryValidate(value, scheme);
+    const { result, fieldsState } = tryValidate(value, schema);
 
     assert.deepEqual(result, {
       firstname : 'John',
@@ -71,7 +71,7 @@ describe('Basic validation tests with example scheme', function () {
       agreedToTerms : true
     };
 
-    const { result, fieldsState } = tryValidate(value, scheme);
+    const { result, fieldsState } = tryValidate(value, schema);
 
     assert.deepEqual(result, {
       firstname : 'John',

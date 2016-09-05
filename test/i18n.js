@@ -16,7 +16,7 @@ describe('i18n:', function () {
 
   describe('lang:', function () {
 
-    const scheme = {
+    const schema = {
       type : Type.STRING,
       $presence : Presence.REQUIRED
     };
@@ -24,7 +24,7 @@ describe('i18n:', function () {
     it('should have english messages by default', function () {
 
       assert.throws(() =>
-        validate(undefined, scheme),
+        validate(undefined, schema),
       'Validation failed (value is required)');
 
     });
@@ -32,7 +32,7 @@ describe('i18n:', function () {
     it('should have russian messages if language changed', function () {
 
       assert.throws(() => {
-        validate(undefined, scheme, { lang : 'ru' });
+        validate(undefined, schema, { lang : 'ru' });
       }, 'Ошибка валидации (значение не указано)');
 
     });

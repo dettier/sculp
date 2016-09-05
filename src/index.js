@@ -4,7 +4,7 @@
 
 import isObject from 'lodash-compat/lang/isObject';
 import { setDefaultOptions } from './options';
-import { getInitial, getSubScheme } from './helper';
+import { getInitial, getSubSchema } from './helper';
 
 import ValidationError from './error';
 import { Type, Presence } from './enums';
@@ -19,14 +19,14 @@ import Sculp from './sculp';
 // tryValidate static
 ////////////////////////////////////////////////////////////////////////////////
 
-export function tryValidate (value, scheme, options = {}) {
+export function tryValidate (value, schema, options = {}) {
   // eslint-disable-next-line prefer-rest-params
   if (arguments.length >= 4 || arguments.length < 2)
     throw new Error('Validate function expects 2 or 3 arguments');
   if (options != null && isObject(options) === false)
     throw new Error('Options argument should be an object');
 
-  const sculp = new Sculp(value, scheme, {
+  const sculp = new Sculp(value, schema, {
     ...options,
     disableDependencyTracking : true
   });
@@ -37,14 +37,14 @@ export function tryValidate (value, scheme, options = {}) {
 // validate static
 ////////////////////////////////////////////////////////////////////////////////
 
-export function validate (value, scheme, options = {}) {
+export function validate (value, schema, options = {}) {
   // eslint-disable-next-line prefer-rest-params
   if (arguments.length >= 4 || arguments.length < 2)
     throw new Error('Validate function expects 2 or 3 arguments');
   if (options != null && isObject(options) === false)
     throw new Error('Options argument should be an object');
 
-  const sculp = new Sculp(value, scheme, {
+  const sculp = new Sculp(value, schema, {
     ...options,
     disableDependencyTracking : true
   });
@@ -52,20 +52,23 @@ export function validate (value, scheme, options = {}) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// getSchemeValue static
+// getSchemaValue static
 ////////////////////////////////////////////////////////////////////////////////
 
-export function getSchemeValue (scheme, value, path, rule) {
-  const sculp = new Sculp(value, scheme, { disableDependencyTracking : true });
-  return sculp.getSchemeValue(path, rule);
+export function getSchemaValue (schema, value, path, rule) {
+  const sculp = new Sculp(value, schema, { disableDependencyTracking : true });
+  return sculp.getSchemaValue(path, rule);
 }
+
+// old function name
+export { getSchemaValue as getSchemeValue };
 
 ////////////////////////////////////////////////////////////////////////////////
 // getFieldName static
 ////////////////////////////////////////////////////////////////////////////////
 
-export function getFieldName (scheme, value, path) {
-  const sculp = new Sculp(value, scheme, { disableDependencyTracking : true });
+export function getFieldName (schema, value, path) {
+  const sculp = new Sculp(value, schema, { disableDependencyTracking : true });
   return sculp.getFieldName(path);
 }
 
@@ -73,8 +76,8 @@ export function getFieldName (scheme, value, path) {
 // getFieldPresence static
 ////////////////////////////////////////////////////////////////////////////////
 
-export function getFieldPresence (scheme, value, path) {
-  const sculp = new Sculp(value, scheme, { disableDependencyTracking : true });
+export function getFieldPresence (schema, value, path) {
+  const sculp = new Sculp(value, schema, { disableDependencyTracking : true });
   return sculp.getFieldPresence(path);
 }
 
@@ -85,10 +88,13 @@ export function getFieldPresence (scheme, value, path) {
 export { setDefaultOptions };
 
 ////////////////////////////////////////////////////////////////////////////////
-// getInitial static
+// getInitial & getSubSchema static
 ////////////////////////////////////////////////////////////////////////////////
 
-export { getInitial, getSubScheme };
+export { getInitial, getSubSchema };
+
+// old function name
+export { getSubSchema as getSubScheme };
 
 ////////////////////////////////////////////////////////////////////////////////
 // Error and enums

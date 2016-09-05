@@ -6,7 +6,7 @@
 import { assert } from 'chai';
 
 import { Type } from '../src/index';
-import { getSubScheme, getSubSchemeHandlingPseudoFields } from '../src/helper';
+import { getSubSchema, getSubSchemaHandlingPseudoFields } from '../src/helper';
 
 ////////////////////////////////////////////////////////////////////////////////
 // REQUIRES : END
@@ -14,7 +14,7 @@ import { getSubScheme, getSubSchemeHandlingPseudoFields } from '../src/helper';
 
 describe('helper', function () {
 
-  const scheme = {
+  const schema = {
     type : Type.OBJECT,
     properties : {
       strProp : { type : Type.STRING },
@@ -25,45 +25,45 @@ describe('helper', function () {
     }
   };
 
-  describe('getSubScheme:', function () {
+  describe('getSubSchema:', function () {
 
-    it('should return root scheme', function () {
-      assert.strictEqual(getSubScheme(scheme, ''), scheme);
+    it('should return root schema', function () {
+      assert.strictEqual(getSubSchema(schema, ''), schema);
     });
 
-    it('should return subfield schemes', function () {
-      assert.strictEqual(getSubScheme(scheme, '.strProp'),
-        scheme.properties.strProp);
-      assert.strictEqual(getSubScheme(scheme, '.arrayProp'),
-        scheme.properties.arrayProp);
-      assert.strictEqual(getSubScheme(scheme, '.arrayProp[0]'),
-        scheme.properties.arrayProp.items);
-      assert.strictEqual(getSubScheme(scheme, '.arrayProp[100]'),
-        scheme.properties.arrayProp.items);
-      assert.strictEqual(getSubScheme(scheme, '.arrayProp.items'),
+    it('should return subfield schemas', function () {
+      assert.strictEqual(getSubSchema(schema, '.strProp'),
+        schema.properties.strProp);
+      assert.strictEqual(getSubSchema(schema, '.arrayProp'),
+        schema.properties.arrayProp);
+      assert.strictEqual(getSubSchema(schema, '.arrayProp[0]'),
+        schema.properties.arrayProp.items);
+      assert.strictEqual(getSubSchema(schema, '.arrayProp[100]'),
+        schema.properties.arrayProp.items);
+      assert.strictEqual(getSubSchema(schema, '.arrayProp.items'),
         undefined);
     });
 
   });
 
-  describe('getSubSchemeHandlingPseudoFields:', function () {
+  describe('getSubSchemaHandlingPseudoFields:', function () {
 
-    it('should return root scheme', function () {
-      assert.strictEqual(getSubSchemeHandlingPseudoFields(scheme, ''), scheme);
+    it('should return root schema', function () {
+      assert.strictEqual(getSubSchemaHandlingPseudoFields(schema, ''), schema);
     });
 
-    it('should return subfield schemes', function () {
-      assert.strictEqual(getSubSchemeHandlingPseudoFields(scheme, '.strProp'),
-        scheme.properties.strProp);
-      assert.strictEqual(getSubSchemeHandlingPseudoFields(scheme, '.arrayProp'),
-        scheme.properties.arrayProp);
-      assert.strictEqual(getSubSchemeHandlingPseudoFields(scheme, '.arrayProp[0]'),
-        scheme.properties.arrayProp.items);
-      assert.strictEqual(getSubSchemeHandlingPseudoFields(scheme, '.arrayProp[100]'),
-        scheme.properties.arrayProp.items);
-      assert.strictEqual(getSubSchemeHandlingPseudoFields(scheme, '.arrayProp.items'),
-        scheme.properties.arrayProp.items);
-      assert.strictEqual(getSubSchemeHandlingPseudoFields(scheme, '.arrayProp.item'),
+    it('should return subfield schemas', function () {
+      assert.strictEqual(getSubSchemaHandlingPseudoFields(schema, '.strProp'),
+        schema.properties.strProp);
+      assert.strictEqual(getSubSchemaHandlingPseudoFields(schema, '.arrayProp'),
+        schema.properties.arrayProp);
+      assert.strictEqual(getSubSchemaHandlingPseudoFields(schema, '.arrayProp[0]'),
+        schema.properties.arrayProp.items);
+      assert.strictEqual(getSubSchemaHandlingPseudoFields(schema, '.arrayProp[100]'),
+        schema.properties.arrayProp.items);
+      assert.strictEqual(getSubSchemaHandlingPseudoFields(schema, '.arrayProp.items'),
+        schema.properties.arrayProp.items);
+      assert.strictEqual(getSubSchemaHandlingPseudoFields(schema, '.arrayProp.item'),
         undefined);
     });
 

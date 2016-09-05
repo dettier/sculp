@@ -15,8 +15,8 @@ import _validate, { PRESENCE_RULE_NAME } from './validate';
 import { setValue } from './object/helper';
 import {
   getParentPathsMemoized,
-  getSubScheme,
-  getSubSchemeHandlingPseudoFields } from './helper';
+  getSubSchema,
+  getSubSchemaHandlingPseudoFields } from './helper';
 
 import { setLanguage } from './i18n/lang';
 import { currentDefaultOptions } from './options';
@@ -36,7 +36,7 @@ class Sculp {
   // constructor
   //////////////////////////////////////////////////////////////////////////////
 
-  constructor (value, scheme, options = {}) {
+  constructor (value, schema, options = {}) {
     this.options = {
       ...currentDefaultOptions,
       ...options,
@@ -53,17 +53,17 @@ class Sculp {
         ...options.castsStrict
       }
     };
-    this._init(value, scheme);
+    this._init(value, schema);
   }
 
   //////////////////////////////////////////////////////////////////////////////
   // _init
   //////////////////////////////////////////////////////////////////////////////
 
-  _init (value, scheme) {
-    this.scheme = scheme;
+  _init (value, schema) {
+    this.schema = schema;
     this.value = value;
-    this.getSubScheme = memoize(this.getSubScheme);
+    this.getSubSchema = memoize(this.getSubSchema);
 
     if (this.options.disableDependencyTracking !== true)
       this.dependencyTracker = new DependencyTracker();
@@ -88,7 +88,7 @@ class Sculp {
   //////////////////////////////////////////////////////////////////////////////
 
   setValue (value) {
-    this._init(value, this.scheme);
+    this._init(value, this.schema);
   }
 
   //////////////////////////////////////////////////////////////////////////////
@@ -116,18 +116,23 @@ class Sculp {
   }
 
   //////////////////////////////////////////////////////////////////////////////
-  // _getSchemeForPath
+  // _getSchemaForPath
   //////////////////////////////////////////////////////////////////////////////
 
-  getSubScheme (path) {
-    return getSubScheme(this.scheme, path);
+  getSubSchema (path) {
+    return getSubSchema(this.schema, path);
+  }
+
+  // old function name
+  getSubScheme (...args) {
+    return this.getSubSchema(...args);
   }
 
   //////////////////////////////////////////////////////////////////////////////
   // _clearCacheForField
   //////////////////////////////////////////////////////////////////////////////
 
-  _clearCacheForField (path, scheme,
+  _clearCacheForField (path, schema,
                        invalidateSubfields = true) {
 
     // if this path is not in cache
@@ -155,18 +160,18 @@ class Sculp {
 
     // clear subfields
     if (invalidateSubfields) {
-      if (scheme == null)
-        scheme = getSubSchemeHandlingPseudoFields(this.scheme, path);
+      if (schema == null)
+        schema = getSubSchemaHandlingPseudoFields(this.schema, path);
 
-      if (scheme != null) {
-        if (scheme.type === Type.ARRAY) {
+      if (schema != null) {
+        if (schema.type === Type.ARRAY) {
           // we need to invalidate pseudo-path for array item
-          this._clearCacheForField(`${path}.items`, scheme.items);
+          this._clearCacheForField(`${path}.items`, schema.items);
           // invalidating array items
-          each(val, (v, i) => this._clearCacheForField(`${path}[${i}]`, scheme.items));
-        } else if (scheme.type === Type.OBJECT || scheme.type === Type.GROUP) {
+          each(val, (v, i) => this._clearCacheForField(`${path}[${i}]`, schema.items));
+        } else if (schema.type === Type.OBJECT || schema.type === Type.GROUP) {
           // invalidating object properties
-          forOwn(scheme.properties, (v, k) =>
+          forOwn(schema.properties, (v, k) =>
             this._clearCacheForField(`${path}.${k}`, v));
         }
       }
@@ -231,7 +236,7 @@ class Sculp {
     debug('tryValidate');
 
     const result = _validate(
-      this.value, this.scheme, '', {
+      this.value, this.schema, '', {
         ...options,
         CACHE : this.CACHE,
         ERRORS_CACHE : this.ERRORS_CACHE,
@@ -287,12 +292,17 @@ class Sculp {
   }
 
   //////////////////////////////////////////////////////////////////////////////
-  // getSchemeValue
+  // getSchemaValue
   //////////////////////////////////////////////////////////////////////////////
 
-  getSchemeValue (path, prop) {
+  getSchemaValue (path, prop) {
     const fieldState = this.getFieldState(path) || {};
     return fieldState[prop];
+  }
+
+  // old function name
+  getSchemeValue (...args) {
+    return this.getSchemaValue(...args);
   }
 
   //////////////////////////////////////////////////////////////////////////////
@@ -300,7 +310,7 @@ class Sculp {
   //////////////////////////////////////////////////////////////////////////////
 
   getFieldName (path) {
-    return this.getSchemeValue(path, 'name');
+    return this.getSchemaValue(path, 'name');
   }
 
   //////////////////////////////////////////////////////////////////////////////
@@ -308,7 +318,7 @@ class Sculp {
   //////////////////////////////////////////////////////////////////////////////
 
   getFieldPresence (path) {
-    return this.getSchemeValue(path, PRESENCE_RULE_NAME);
+    return this.getSchemaValue(path, PRESENCE_RULE_NAME);
   }
 
 }

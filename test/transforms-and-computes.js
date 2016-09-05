@@ -15,7 +15,7 @@ import { validate, Type, Presence } from '../src/index';
 describe('Transform and compute functions:', function () {
 
   it('should calculate transforms', function () {
-    const scheme = {
+    const schema = {
       type : Type.OBJECT,
       $presence : Presence.REQUIRED,
       properties : {
@@ -33,12 +33,12 @@ describe('Transform and compute functions:', function () {
     const value = {
       name : 'john smith'
     };
-    const result = validate(value, scheme);
+    const result = validate(value, schema);
     assert.deepEqual(result, { name : 'John Smith' });
   });
 
   it('should calculate computes', function () {
-    const scheme = {
+    const schema = {
       type : Type.OBJECT,
       properties : {
         firstname : {
@@ -61,7 +61,7 @@ describe('Transform and compute functions:', function () {
     const result = validate({
       firstname : 'john',
       lastname : 'smith'
-    }, scheme);
+    }, schema);
 
     assert.deepEqual(result, {
       firstname : 'john',
@@ -71,7 +71,7 @@ describe('Transform and compute functions:', function () {
 
     const result2 = validate({
       lastname : 'smith'
-    }, scheme);
+    }, schema);
 
     assert.deepEqual(result2, {
       lastname : 'smith',
@@ -80,22 +80,22 @@ describe('Transform and compute functions:', function () {
   });
 
   it('should calculate transforms only once', function () {
-    const scheme = {
+    const schema = {
       type : Type.NUMBER,
       transform : (v) => v + 1
     };
-    assert.deepEqual(validate(-1, scheme), 0);
-    assert.deepEqual(validate(5, scheme), 6);
-    assert.deepEqual(validate('23', scheme), 24);
+    assert.deepEqual(validate(-1, schema), 0);
+    assert.deepEqual(validate(5, schema), 6);
+    assert.deepEqual(validate('23', schema), 24);
   });
 
   it('should calculate transforms before computes', function () {
-    const scheme = {
+    const schema = {
       type : Type.NUMBER,
       transform : (v) => v + 1,
       compute : (fa) => 0 - fa()
     };
-    assert.deepEqual(validate(5, scheme), -6); // -4 if it was another way around
+    assert.deepEqual(validate(5, schema), -6); // -4 if it was another way around
   });
 
 });

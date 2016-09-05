@@ -42,13 +42,13 @@ export function getWithPrecision (n, precision) {
 // castPrimitive
 ////////////////////////////////////////////////////////////////////////////////
 
-export function castPrimitive (value, scheme, path, context) {
+export function castPrimitive (value, schema, path, context) {
   let casted;
 
-  const type = scheme.type;
+  const type = schema.type;
 
   if (type == null) {
-    if (scheme.hasOwnProperty('type')) {
+    if (schema.hasOwnProperty('type')) {
       // protection from misspellings: { type : Type.NUMBOR }
       throw new Error(getMessage('UNKNOWN_TYPE', { type }, true));
     } else
@@ -77,8 +77,8 @@ export function castPrimitive (value, scheme, path, context) {
 
     const errorObject = {
       field : path,
-      message : getMessage('CAST_ERROR', { type : scheme.type }),
-      name : getRuleValue(scheme.name, undefined, path, context),
+      message : getMessage('CAST_ERROR', { type : schema.type }),
+      name : getRuleValue(schema.name, undefined, path, context),
       value
     };
 
@@ -89,8 +89,8 @@ export function castPrimitive (value, scheme, path, context) {
 
   } else {
 
-    if (isNumber(casted) && isNumber(scheme.precision)) {
-      casted = getWithPrecision(casted, scheme.precision);
+    if (isNumber(casted) && isNumber(schema.precision)) {
+      casted = getWithPrecision(casted, schema.precision);
     }
   }
 
@@ -101,7 +101,7 @@ export function castPrimitive (value, scheme, path, context) {
 // castObject
 ////////////////////////////////////////////////////////////////////////////////
 
-export function castObject (value, scheme, path, context) {
+export function castObject (value, schema, path, context) {
 
   const fieldState = context.FIELD_STATE_CACHE[path];
 
@@ -113,8 +113,8 @@ export function castObject (value, scheme, path, context) {
 
     const errorObject = {
       field : path,
-      message : getMessage('CAST_ERROR', { type : scheme.type }),
-      name : getRuleValue(scheme.name, undefined, path, context),
+      message : getMessage('CAST_ERROR', { type : schema.type }),
+      name : getRuleValue(schema.name, undefined, path, context),
       value
     };
 
@@ -133,32 +133,32 @@ export function castObject (value, scheme, path, context) {
     calculateTransformsAndComputes = true;
 
   let res = {};
-  if (scheme.removeExtra === false)
+  if (schema.removeExtra === false)
     res = { ...value };
   else
     res = {};
 
   //let k;
   let fieldsCount = 0;
-  const properties = scheme.properties || {};
+  const properties = schema.properties || {};
   const propertiesKeys = keys(properties);
 
   for (let i = 0; i < propertiesKeys.length; i++) {
     const k = propertiesKeys[i];
     const fieldValue = value && value[k];
-    const fieldScheme = properties[k];
+    const fieldSchema = properties[k];
     const fieldPath = `${path}.${k}`;
 
     const fieldRunValidations =
       runValidations &&
-      getRunValidationsForSubfields(scheme, value);
+      getRunValidationsForSubfields(schema, value);
 
     const fieldCalculateComputes =
         (calculateTransformsAndComputes === false) ? false :
-            (scheme.type === Type.GROUP || value != null);
+            (schema.type === Type.GROUP || value != null);
 
     const fieldRes = validateField(
-      fieldValue, fieldScheme, fieldPath, {
+      fieldValue, fieldSchema, fieldPath, {
         ...context,
         runValidations : fieldRunValidations,
         calculateTransformsAndComputes : fieldCalculateComputes
@@ -175,10 +175,10 @@ export function castObject (value, scheme, path, context) {
   }
 
   // if original value was not defined, return undefined
-  if (value == null && scheme.type !== Type.GROUP)
+  if (value == null && schema.type !== Type.GROUP)
     res = undefined;
 
-  if (fieldsCount === 0 && getRemoveEmptyValue(scheme, context))
+  if (fieldsCount === 0 && getRemoveEmptyValue(schema, context))
     res = undefined;
 
   return res;
@@ -188,7 +188,7 @@ export function castObject (value, scheme, path, context) {
 // castArray
 ////////////////////////////////////////////////////////////////////////////////
 
-export function castArray (value, scheme, path, context) {
+export function castArray (value, schema, path, context) {
 
   const fieldState = context.FIELD_STATE_CACHE[path];
 
@@ -200,8 +200,8 @@ export function castArray (value, scheme, path, context) {
 
     const errorObject = {
       field : path,
-      message : getMessage('CAST_ERROR', { type : scheme.type }),
-      name : getRuleValue(scheme.name, undefined, path, context),
+      message : getMessage('CAST_ERROR', { type : schema.type }),
+      name : getRuleValue(schema.name, undefined, path, context),
       value
     };
 
@@ -219,10 +219,10 @@ export function castArray (value, scheme, path, context) {
   if (preserveEmptyArrayItems === undefined)
     preserveEmptyArrayItems = false;
 
-  const itemScheme = scheme.items;
+  const itemSchema = schema.items;
 
   // to add pseudo-path "path.items" into fieldState
-  validateField(undefined, itemScheme, `${path}.items`, {
+  validateField(undefined, itemSchema, `${path}.items`, {
     ...context,
     runValidations : false,
     calculateTransformsAndComputes : false
@@ -235,7 +235,7 @@ export function castArray (value, scheme, path, context) {
     let skip = 0;
     for (let i = 0; i < value.length; i++) {
       const itemPath = `${path}[${i - skip}]`;
-      const itemRes = validateField(value[i], itemScheme,
+      const itemRes = validateField(value[i], itemSchema,
         itemPath, context);
 
       // is there an error validating this item?
@@ -260,7 +260,7 @@ export function castArray (value, scheme, path, context) {
     }
   }
 
-  if (res && res.length === 0 && getRemoveEmptyValue(scheme, context))
+  if (res && res.length === 0 && getRemoveEmptyValue(schema, context))
     res = undefined;
 
   // extending with itemFieldState and itemsFieldStates

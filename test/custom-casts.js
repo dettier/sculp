@@ -18,13 +18,13 @@ const INTEGER = 'INTEGER';
 
 describe('Custom casts:', function () {
 
-  const scheme = {
+  const schema = {
     type : INTEGER,
     $presence : Presence.REQUIRED
   };
 
   it('should throw if custom cast is not registered', function () {
-    assert.throws(() => validate(5, scheme), 'Unknown type INTEGER');
+    assert.throws(() => validate(5, schema), 'Unknown type INTEGER');
   });
 
   it('should use custom cast if it\'s provided', function () {
@@ -40,12 +40,12 @@ describe('Custom casts:', function () {
       }
     };
 
-    assert.equal(validate(5, scheme, options), 5);
-    assert.equal(validate('5', scheme, options), 5);
+    assert.equal(validate(5, schema, options), 5);
+    assert.equal(validate('5', schema, options), 5);
 
-    assert.throws(() => validate(5.5, scheme, options),
+    assert.throws(() => validate(5.5, schema, options),
       'сouldn\'t cast value to type INTEGER');
-    assert.throws(() => validate('5.5', scheme, options),
+    assert.throws(() => validate('5.5', schema, options),
       'сouldn\'t cast value to type INTEGER');
   });
 
@@ -62,11 +62,11 @@ describe('Custom casts:', function () {
       }
     };
 
-    assert.equal(validate(5, scheme, options), 5);
+    assert.equal(validate(5, schema, options), 5);
 
-    assert.throws(() => validate(5.5, scheme, options),
+    assert.throws(() => validate(5.5, schema, options),
       'сouldn\'t cast value to type INTEGER');
-    assert.throws(() => validate('5', scheme, options),
+    assert.throws(() => validate('5', schema, options),
       'сouldn\'t cast value to type INTEGER');
   });
 

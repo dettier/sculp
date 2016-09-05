@@ -21,7 +21,7 @@ import { getAndEvaluateValue } from './object/helper';
 import { getMessage } from './i18n/lang';
 
 import {
-    getSubScheme,
+    getSubSchema,
     deleteFieldFromCache,
     deleteFieldFromErrors,
     extendFieldStateWithError
@@ -47,7 +47,7 @@ export const VALUES_RULE_NAME = `${VALIDATIONS_PROPERTY_NAME_PREFIX}values`;
 // calculateAndValidateRule
 ////////////////////////////////////////////////////////////////////////////////
 
-function calculateAndValidateRule (scheme, ruleName,
+function calculateAndValidateRule (schema, ruleName,
                                    res, path, onlyCalculate, context) {
 
   let nameWithoutPrefix;
@@ -55,7 +55,7 @@ function calculateAndValidateRule (scheme, ruleName,
   let ruleValue;
 
   if (ruleName === CUSTOM_RULE_NAME) {
-    const customRuleFunction = scheme[CUSTOM_RULE_NAME];
+    const customRuleFunction = schema[CUSTOM_RULE_NAME];
     validation = customRuleFunction && customRuleFunction.value ||
                  customRuleFunction;
     ruleValue = undefined;
@@ -63,7 +63,7 @@ function calculateAndValidateRule (scheme, ruleName,
     nameWithoutPrefix = ruleName.slice(VALIDATIONS_PROPERTY_NAME_PREFIX.length);
     validation = context.validations[nameWithoutPrefix];
 
-    ruleValue = getRuleValue(scheme[ruleName], res, path, context);
+    ruleValue = getRuleValue(schema[ruleName], res, path, context);
 
     // for Presence rule there are some checks
     if (ruleName === PRESENCE_RULE_NAME) {
@@ -109,7 +109,7 @@ function calculateAndValidateRule (scheme, ruleName,
 
     let message;
     if (ruleName !== CUSTOM_RULE_NAME)
-      message = getRuleErrorMessage(scheme[ruleName], res, path, context);
+      message = getRuleErrorMessage(schema[ruleName], res, path, context);
 
     message = message || result;
 
@@ -122,7 +122,7 @@ function calculateAndValidateRule (scheme, ruleName,
       rule : ruleName,
       message,
       field : path,
-      name : getRuleValue(scheme.name, res, path, context),
+      name : getRuleValue(schema.name, res, path, context),
       value : res
     };
 
@@ -139,11 +139,11 @@ function calculateAndValidateRule (scheme, ruleName,
 // hasValidValue
 ////////////////////////////////////////////////////////////////////////////////
 
-function hasValidValue (scheme, path, context) {
-  if (scheme.hasOwnProperty('validWhenOptional') &&
+function hasValidValue (schema, path, context) {
+  if (schema.hasOwnProperty('validWhenOptional') &&
       context.FIELD_STATE_CACHE[path][PRESENCE_RULE_NAME] !== Presence.REQUIRED)
     return true;
-  else if (scheme.hasOwnProperty('valid'))
+  else if (schema.hasOwnProperty('valid'))
     return true;
   return false;
 }
@@ -152,12 +152,12 @@ function hasValidValue (scheme, path, context) {
 // getValidValue
 ////////////////////////////////////////////////////////////////////////////////
 
-function getValidValue (scheme, path, context) {
-  if (scheme.hasOwnProperty('validWhenOptional') &&
+function getValidValue (schema, path, context) {
+  if (schema.hasOwnProperty('validWhenOptional') &&
       context.FIELD_STATE_CACHE[path][PRESENCE_RULE_NAME] !== Presence.REQUIRED)
-    return scheme.validWhenOptional;
-  else if (scheme.hasOwnProperty('valid'))
-    return scheme.valid;
+    return schema.validWhenOptional;
+  else if (schema.hasOwnProperty('valid'))
+    return schema.valid;
 
   return undefined;
 }
@@ -166,34 +166,34 @@ function getValidValue (scheme, path, context) {
 // checkIfValidReplacementPossible
 ////////////////////////////////////////////////////////////////////////////////
 
-function checkIfValidReplacementPossible (scheme, res, path, context) {
+function checkIfValidReplacementPossible (schema, res, path, context) {
 
   // check if "valid" value is defined
-  if (hasValidValue(scheme, path, context) === false)
+  if (hasValidValue(schema, path, context) === false)
     return res;
 
   // removing field & subfield errors
-  //clearErrorsForField(scheme, path, context);
+  //clearErrorsForField(schema, path, context);
 
-  return getValidValue(scheme, path, context);
+  return getValidValue(schema, path, context);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // calculateAndValidateRules
 ////////////////////////////////////////////////////////////////////////////////
 
-function calculateAndValidateRules (scheme, res, path, onlyCalculate, context) {
+function calculateAndValidateRules (schema, res, path, onlyCalculate, context) {
 
   const fieldState = context.FIELD_STATE_CACHE[path];
 
   // validating presence rule even if rule value is not defined
   res = calculateAndValidateRule(
-      scheme, PRESENCE_RULE_NAME, res, path, onlyCalculate, context);
+      schema, PRESENCE_RULE_NAME, res, path, onlyCalculate, context);
   const presenceRuleGotError = fieldState.errorsCount > 0;
 
   if (fieldState[PRESENCE_RULE_NAME] === Presence.ABSENT) {
     res = undefined;
-    //clearErrorsForField(scheme, path, context);
+    //clearErrorsForField(schema, path, context);
   }
 
   // validating all the rest rules only if
@@ -201,9 +201,9 @@ function calculateAndValidateRules (scheme, res, path, onlyCalculate, context) {
   onlyCalculate = onlyCalculate || (res == null) || presenceRuleGotError;
 
   // validating $values rule
-  if (scheme[VALUES_RULE_NAME] != null) {
+  if (schema[VALUES_RULE_NAME] != null) {
     res = calculateAndValidateRule(
-        scheme, VALUES_RULE_NAME, res, path, onlyCalculate, context);
+        schema, VALUES_RULE_NAME, res, path, onlyCalculate, context);
 
     // this is true because we validate this rule
     // only if presence rule didn't return error
@@ -219,7 +219,7 @@ function calculateAndValidateRules (scheme, res, path, onlyCalculate, context) {
     }
   }
 
-  const ruleNames = keys(scheme);
+  const ruleNames = keys(schema);
   for (let i = 0; i < ruleNames.length; i++) {
     const ruleName = ruleNames[i];
     if (ruleName === PRESENCE_RULE_NAME)
@@ -230,12 +230,12 @@ function calculateAndValidateRules (scheme, res, path, onlyCalculate, context) {
     if (prefix !== VALIDATIONS_PROPERTY_NAME_PREFIX)
       continue;
     res = calculateAndValidateRule(
-        scheme, ruleName, res, path, onlyCalculate, context);
+        schema, ruleName, res, path, onlyCalculate, context);
   }
 
   // check if valid replacement needed
   if (fieldState.errorsCountWithSubfields > 0)
-    res = checkIfValidReplacementPossible(scheme, res, path, context);
+    res = checkIfValidReplacementPossible(schema, res, path, context);
 
   return res;
 }
@@ -244,7 +244,7 @@ function calculateAndValidateRules (scheme, res, path, onlyCalculate, context) {
 // validateField
 ////////////////////////////////////////////////////////////////////////////////
 
-export const validateField = (value, scheme, path, context) => {
+export const validateField = (value, schema, path, context) => {
 
   const { CACHE, FIELD_STATE_CACHE } = context;
   let {
@@ -263,7 +263,7 @@ export const validateField = (value, scheme, path, context) => {
   if (runValidations === undefined)
     runValidations = true;
 
-  debug('validating value for path "%s" type %s', path, scheme && scheme.type);
+  debug('validating value for path "%s" type %s', path, schema && schema.type);
 
   //////////////////////////////////////////////////////////////////////////////
   // checking cache
@@ -289,30 +289,30 @@ export const validateField = (value, scheme, path, context) => {
   };
 
   //////////////////////////////////////////////////////////////////////////////
-  // checking field scheme to be defined
+  // checking field schema to be defined
   //////////////////////////////////////////////////////////////////////////////
 
-  if (scheme == null) {
+  if (schema == null) {
     if (typeof console !== 'undefined') {
       // eslint-disable-next-line no-console
-      console && console.warn('Scheme not defined for path %s', path);
+      console && console.warn('Schema not defined for path %s', path);
     }
-    scheme = {};
+    schema = {};
   }
 
   //////////////////////////////////////////////////////////////////////////////
   // calculating field
   //////////////////////////////////////////////////////////////////////////////
 
-  if (scheme.type === Type.OBJECT) {
-    res = castObject(value, scheme, path, context);
-  } else if (scheme.type === Type.GROUP) {
-    res = castObject(value, scheme, path, context);
-  } else if (scheme.type === Type.ARRAY) {
-    res = castArray(value, scheme, path, context);
+  if (schema.type === Type.OBJECT) {
+    res = castObject(value, schema, path, context);
+  } else if (schema.type === Type.GROUP) {
+    res = castObject(value, schema, path, context);
+  } else if (schema.type === Type.ARRAY) {
+    res = castArray(value, schema, path, context);
   } else {
     if (value != null)
-      res = castPrimitive(value, scheme, path, context);
+      res = castPrimitive(value, schema, path, context);
   }
 
   //////////////////////////////////////////////////////////////////////////////
@@ -334,28 +334,28 @@ export const validateField = (value, scheme, path, context) => {
     let transforms;
     let computes;
 
-    if (scheme.transform != null) {
-      if (isArray(scheme.transform))
-        transforms = scheme.transform;
+    if (schema.transform != null) {
+      if (isArray(schema.transform))
+        transforms = schema.transform;
       else
-        transforms = [ scheme.transform ];
+        transforms = [ schema.transform ];
     }
 
-    if (scheme.compute != null) {
-      if (isArray(scheme.compute))
-        computes = scheme.compute;
+    if (schema.compute != null) {
+      if (isArray(schema.compute))
+        computes = schema.compute;
       else
-        computes = [ scheme.compute ];
+        computes = [ schema.compute ];
     }
 
     // removing initial value if needed
     if (context.removeInitial === true &&
-        scheme.removeInitial === true &&
-        scheme.hasOwnProperty('initial')) {
+        schema.removeInitial === true &&
+        schema.hasOwnProperty('initial')) {
       computes = computes || [];
       computes.push(function (fa) {
         const _value = fa();
-        return _value !== scheme.initial ? _value : undefined;
+        return _value !== schema.initial ? _value : undefined;
       });
     }
 
@@ -387,7 +387,7 @@ export const validateField = (value, scheme, path, context) => {
 
       // validating new value
       debug('- running re-validation for %s', path);
-      return validateField(newRes, scheme, path, {
+      return validateField(newRes, schema, path, {
         ...context,
         calculateTransformsAndComputes : false
       });
@@ -399,21 +399,21 @@ export const validateField = (value, scheme, path, context) => {
   //////////////////////////////////////////////////////////////////////////////
 
   fieldState.path = path;
-  if (scheme.type !== undefined)
-    fieldState.type = scheme.type;
-  if (scheme.meta !== undefined)
-    fieldState.meta = scheme.meta;
-  if (scheme.precision !== undefined)
-    fieldState.precision = scheme.precision;
+  if (schema.type !== undefined)
+    fieldState.type = schema.type;
+  if (schema.meta !== undefined)
+    fieldState.meta = schema.meta;
+  if (schema.precision !== undefined)
+    fieldState.precision = schema.precision;
 
-  fieldState.name = getRuleValue(scheme.name, res, path, context);
+  fieldState.name = getRuleValue(schema.name, res, path, context);
 
   //////////////////////////////////////////////////////////////////////////////
   // validating
   //////////////////////////////////////////////////////////////////////////////
 
   const dryRun = runValidations === false;
-  const newRes = calculateAndValidateRules(scheme, res, path, dryRun, context);
+  const newRes = calculateAndValidateRules(schema, res, path, dryRun, context);
 
   if (newRes !== res) {
     debug('re-validation needed after rules validation for path %s', path);
@@ -428,7 +428,7 @@ export const validateField = (value, scheme, path, context) => {
 
     // validating new value
     debug('- running re-validation for %s', path);
-    return validateField(newRes, scheme, path, {
+    return validateField(newRes, schema, path, {
       ...context,
       runValidations : false,
       calculateTransformsAndComputes : false
@@ -441,8 +441,8 @@ export const validateField = (value, scheme, path, context) => {
 
   if (context.extendFieldStatesWithValues)
     fieldState.value = res;
-  if (context.extendFieldStatesWithScheme)
-    fieldState.scheme = scheme;
+  if (context.extendFieldStatesWithSchema)
+    fieldState.schema = schema;
 
   CACHE[path] = res;
 
@@ -453,15 +453,15 @@ export const validateField = (value, scheme, path, context) => {
 // cast
 ////////////////////////////////////////////////////////////////////////////////
 
-export default (rootValue, rootScheme, path = '', options = {}) => {
-  let _scheme;
+export default (rootValue, rootSchema, path = '', options = {}) => {
+  let _schema;
   let _value;
 
   if (path === '') {
-    _scheme = rootScheme;
+    _schema = rootSchema;
     _value = rootValue;
   } else {
-    _scheme = getSubScheme(rootScheme, path);
+    _schema = getSubSchema(rootSchema, path);
     _value = getAndEvaluateValue(rootValue, path);
   }
 
@@ -484,8 +484,8 @@ export default (rootValue, rootScheme, path = '', options = {}) => {
       ...options.castsStrict
     },
     rootValue,
-    rootScheme
+    rootSchema
   };
 
-  return validateField(_value, _scheme, path, context);
+  return validateField(_value, _schema, path, context);
 };

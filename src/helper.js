@@ -48,26 +48,26 @@ export function getParentPath (path) {
 export const getParentPathMemoized = memoize(getParentPath);
 
 ////////////////////////////////////////////////////////////////////////////////
-// getSubScheme
+// getSubSchema
 ////////////////////////////////////////////////////////////////////////////////
 
-export function getSubScheme (scheme, path = '') {
+export function getSubSchema (schema, path = '') {
 
   path = normalizeMemoized(path);
 
   path = path.replace(/\.(.)/g, '.properties.$1');
   path = path.replace(/\[\w*\]/g, '.items');
 
-  return getValue(scheme, path);
+  return getValue(schema, path);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// getSubSchemeHandlingPseudoFields
+// getSubSchemaHandlingPseudoFields
 ////////////////////////////////////////////////////////////////////////////////
 
-export function getSubSchemeHandlingPseudoFields (scheme, path = '') {
+export function getSubSchemaHandlingPseudoFields (schema, path = '') {
 
-  const res = getSubScheme(scheme, path);
+  const res = getSubSchema(schema, path);
 
   if (res != null)
     return res;
@@ -75,9 +75,9 @@ export function getSubSchemeHandlingPseudoFields (scheme, path = '') {
   // path might reference pseudo-path for array item ".array.items"
   if (path === 'items' || endsWith(path, '.items')) {
     const parentPath = getParentPathMemoized(path);
-    const parentScheme = getSubScheme(scheme, parentPath);
-    if (parentScheme && parentScheme.type === Type.ARRAY) {
-      return parentScheme.items;
+    const parentSchema = getSubSchema(schema, parentPath);
+    if (parentSchema && parentSchema.type === Type.ARRAY) {
+      return parentSchema.items;
     }
   }
 
@@ -88,8 +88,8 @@ export function getSubSchemeHandlingPseudoFields (scheme, path = '') {
 // getRunValidationsForSubfields
 ////////////////////////////////////////////////////////////////////////////////
 
-export function getRunValidationsForSubfields (scheme, value) {
-  if (scheme.type === Type.GROUP)
+export function getRunValidationsForSubfields (schema, value) {
+  if (schema.type === Type.GROUP)
     return true;
   return value != null;
 }
@@ -98,7 +98,7 @@ export function getRunValidationsForSubfields (scheme, value) {
 // getRunValidationsForPath
 ////////////////////////////////////////////////////////////////////////////////
 
-export function getRunValidationsForPath (rootScheme, rootValue, path) {
+export function getRunValidationsForPath (rootSchema, rootValue, path) {
   if (path === '')
     return true;
 
@@ -108,10 +108,10 @@ export function getRunValidationsForPath (rootScheme, rootValue, path) {
   if (parentPath == null)
     return true;
 
-  const parentScheme = getSubScheme(rootScheme, parentPath);
+  const parentSchema = getSubSchema(rootSchema, parentPath);
 
   const parentValue = getAndEvaluateValue(rootValue, parentPath);
-  return getRunValidationsForSubfields(parentScheme, parentValue);
+  return getRunValidationsForSubfields(parentSchema, parentValue);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -196,25 +196,25 @@ export const isValueEmpty = (value) => {
 // getRemoveEmptyValue
 ////////////////////////////////////////////////////////////////////////////////
 
-export const getRemoveEmptyValue = (fieldScheme, context) => {
-  return fieldScheme.removeEmpty || context.removeEmpty || false;
+export const getRemoveEmptyValue = (fieldSchema, context) => {
+  return fieldSchema.removeEmpty || context.removeEmpty || false;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
 // getInitial
 ////////////////////////////////////////////////////////////////////////////////
 
-export const getInitial = function (scheme) {
+export const getInitial = function (schema) {
 
-  if (scheme.hasOwnProperty('initial'))
-    return scheme.initial;
+  if (schema.hasOwnProperty('initial'))
+    return schema.initial;
 
   let result = undefined;
 
-  if (scheme.type === Type.OBJECT || scheme.type === Type.GROUP) {
+  if (schema.type === Type.OBJECT || schema.type === Type.GROUP) {
 
     result = {};
-    const properties = scheme.properties || {};
+    const properties = schema.properties || {};
 
     const propKeys = keys(properties);
     for (let i = 0; i < propKeys.length; i++) {

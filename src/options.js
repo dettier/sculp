@@ -4,7 +4,7 @@
 
 const DEFAULT_OPTIONS = {
   strict : false, // use strict casts or not
-  extendFieldStatesWithScheme : false,
+  extendFieldStatesWithSchema : false,
   extendFieldStatesWithValues : false,
   extendArrayStatesWithItemStates : false,
   extendFieldStatesWithErrors : false,

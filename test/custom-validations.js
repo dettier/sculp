@@ -15,13 +15,13 @@ import { Type } from '../src/enums';
 
 describe('Custom validations:', function () {
 
-  const scheme = {
+  const schema = {
     type : Type.STRING,
     $startsWith : 'AB'
   };
 
   it('should throw if custom validation is not registered', function () {
-    assert.throws(() => validate(5, scheme), 'Unknown validation startsWith');
+    assert.throws(() => validate(5, schema), 'Unknown validation startsWith');
   });
 
   it('should use custom validation if it\'s provided', function () {
@@ -36,8 +36,8 @@ describe('Custom validations:', function () {
       }
     };
 
-    assert.equal(validate('ABab', scheme, options), 'ABab');
-    assert.throws(() => validate('CDcd', scheme, options), 'value should start with AB');
+    assert.equal(validate('ABab', schema, options), 'ABab');
+    assert.throws(() => validate('CDcd', schema, options), 'value should start with AB');
   });
 
 });

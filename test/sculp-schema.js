@@ -9,7 +9,7 @@ import { Type, Presence } from '../src/enums';
 // REQUIRES : END
 ////////////////////////////////////////////////////////////////////////////////
 
-const scheme = {
+const schema = {
   type : Type.OBJECT,
   properties : {
 
@@ -55,4 +55,4 @@ const scheme = {
 // export
 ////////////////////////////////////////////////////////////////////////////////
 
-export default scheme;
+export default schema;

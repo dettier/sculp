@@ -13,10 +13,10 @@
   ],
   "main": "lib/index.js",
   "keywords": [
-    "object",
+    "schema",
     "validation",
+    "object",
     "sanitization",
-    "scheme",
     "json"
   ],
   "devDependencies": {

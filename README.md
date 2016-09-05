@@ -3,7 +3,7 @@
 
 ## Description
 
-Sculp is a library that will help you cast and/or validate input data according to your scheme. Typical applications include form management, validating object before saving to DB, casting HTTP request parameters to proper types, and many more.
+Sculp is a library that will help you cast and/or validate input data according to your schema. Typical applications include form management, validating object before saving to DB, casting HTTP request parameters to proper types, and many more.
 
 Compared to other object validation libraries Sculp provides unique features such as conditional validation rules, incremental validation and object structure reuse.  
 
@@ -11,16 +11,16 @@ Compared to other object validation libraries Sculp provides unique features suc
 * [Features](#features)
 * [Installation](#installation)
 * [Example](#example)
-* [Scheme structure](#scheme-structure)
+* [Schema structure](#schema-structure)
 * [API](#api)
     * [Static functions](#static-functions)
         + [`validate()`](#validate)
         + [`tryValidate()`](#tryvalidate)
-        + [`getSchemeValue()`](#getschemevalue-getfieldname-getfieldpresence)
-        + [`getFieldName()`](#getschemevalue-getfieldname-getfieldpresence)
-        + [`getFieldPresence()`](#getschemevalue-getfieldname-getfieldpresence)
+        + [`getSchemaValue()`](#getschemavalue-getfieldname-getfieldpresence)
+        + [`getFieldName()`](#getschemavalue-getfieldname-getfieldpresence)
+        + [`getFieldPresence()`](#getschemavalue-getfieldname-getfieldpresence)
         + [`getInitial()`](#getinitial)
-        + [`getSubScheme()`](#getsubscheme)
+        + [`getSubSchema()`](#getsubschema)
         + [`setDefaultOptions()`](#setdefaultoptions)
     * [Sculp class](#sculp-class)
         + [`constructor()`](#constructor)
@@ -31,16 +31,16 @@ Compared to other object validation libraries Sculp provides unique features suc
         + [`setField()`](#setfield-setfields)
         + [`setFields()`](#setfield-setfields)
         + [`getFieldState()`](#getfieldstate)
-        + [`getSchemeValue()`](#getschemevalue-getfieldname-getfieldpresence-1)
-        + [`getFieldName()`](#getschemevalue-getfieldname-getfieldpresence-1)
-        + [`getFieldPresence()`](#getschemevalue-getfieldname-getfieldpresence-1)
+        + [`getSchemaValue()`](#getschemavalue-getfieldname-getfieldpresence-1)
+        + [`getFieldName()`](#getschemavalue-getfieldname-getfieldpresence-1)
+        + [`getFieldPresence()`](#getschemavalue-getfieldname-getfieldpresence-1)
     * [Field accessor functions](#field-accessor-functions)
     * [Options](#options)
 * [Custom types and validations](#custom-types-and-validations)
 * [Field state object](#field-state-object)
 
 ## Features
-* **Declarative scheme**. Schemes are simple objects, with a very easy-to-read structure. This means you can reuse them, clone them, extend them, and do with them whatever you want.
+* **Declarative schema**. Schemas are simple objects, with a very easy-to-read structure. This means you can reuse them, clone them, extend them, and do with them whatever you want.
 * **Support for custom types and validation rules**. Any crazy rules you need. Array should be of odd length and its items should start with an underscore? No problem.
 * **Conditional rules**. Some field is present only if some checkbox field is on? No problem.
 * **Fast incremental validation**. You need to validate some gigantic form on the fly while user is editing it? Incremental validation ensures that only necessary fields and validation rules are recalculated.
@@ -57,7 +57,7 @@ $ npm install --save sculp
 ```js
 import { validate, Type, Presence } from 'sculp';
 
-const scheme = {
+const schema = {
   type : Type.OBJECT,
   properties : {
     name : {
@@ -82,10 +82,10 @@ const scheme = {
   }
 }
 
-const result = validate({ name : 'John', gender : ' MALE ', age : '21' }, scheme);
+const result = validate({ name : 'John', gender : ' MALE ', age : '21' }, schema);
   // returns { name : 'John', gender : 'male', age : 21, isAdult : true }
 
-const result = validate({ age : -5 }, scheme);
+const result = validate({ age : -5 }, schema);
   // throws sculp.ValidationError with errors array
 
 ```
@@ -106,9 +106,9 @@ This example schema defines the following constraints:
     * boolean computed value
 
 
-## Scheme structure
+## Schema structure
 
-Schemes are plain javascript objects that can have following definition properties:
+Schemas are plain javascript objects that can have following definition properties:
 
 ### `type`
 The type of a value. Should be string value.
@@ -127,9 +127,9 @@ List of available types:
 * `Type.BOOLEAN` Boolean type.
 * `Type.FUNCTION` Function type.
 * `Type.DATE` Date type.
-* `Type.OBJECT` Object type. For this type you need to provide schemes for all properties using `properties` field.
+* `Type.OBJECT` Object type. For this type you need to provide schemas for all properties using `properties` field.
 * `Type.GROUP` The same as `Type.OBJECT` but this type represents an object as just a group of fields and not as some entity. The difference is the validation of properties for `undefined` values. For `Type.GROUP` properties are validated and for `Type.OBJECT` they are not.  
-* `Type.ARRAY` Array type. For this type you need to provide scheme for array item using `items` field.
+* `Type.ARRAY` Array type. For this type you need to provide schema for array item using `items` field.
 * `Type.ANY_VALUE` Value of any type.
 * `Type.ANY_OBJECT` Object with any properties. No `properties` field needed.
 
@@ -146,7 +146,7 @@ Can be defined for `Type.NUMBER`. Truncates the value to specified precision.
 If any validation (other than type validation) fails on this field, value will be replaced by `valid` value if it is defined.
 
 ### `initial`
-Provide initial value. You can get initial value for whole scheme with `getInitial(scheme)` function.
+Provide initial value. You can get initial value for whole schema with `getInitial(schema)` function.
 
 ### `removeEmpty`
 Used for `Type.ARRAY`, `Type.OBJECT` and `Type.GROUP` only. Overrides `removeEmpty` option for this value/field.
@@ -155,10 +155,10 @@ Default value is `false`.
 
 ### `properties`
 Used for `Type.OBJECT` and `Type.GROUP` only.
-The value should be an object that provides schemes for available properties in the form of `{ prop1 : prop1Scheme, prop2 : prop2Scheme, ... }`.
+The value should be an object that provides schemas for available properties in the form of `{ prop1 : prop1Schema, prop2 : prop2Schema, ... }`.
 
 ### `items`
-Used for `Type.ARRAY` only. The value should be a scheme for array items.
+Used for `Type.ARRAY` only. The value should be a schema for array items.
 
 ### `transform`
 A function or array of functions to transform value (e.g. convert string to lowercase).
@@ -169,13 +169,13 @@ A function of array of functions to compute value (e.g. set object field value t
 Those functions take [field accessor function](#field-accessor-functions) as an argument and should return computed value.
 
 ### `$...` validation rule properties
-All scheme properties that start with `$` are validation rules. There are several predefined validations, and you can provide your custom validations using options or defining `$custom` validation.
+All schema properties that start with `$` are validation rules. There are several predefined validations, and you can provide your custom validations using options or defining `$custom` validation.
 Any validation rule expects some rule value that value will be validated against. For example for `$values` rule value is expected to be an array of possible values (`{ $values : [ 1, 2, 3 ] }`).
 The value `$...` property should be a rule value or a function computing rule value.
 
 Example:
 ```js
-const scheme = {
+const schema = {
   type : Type.OBJECT,
   properties : {
     string : {  
@@ -217,7 +217,7 @@ Function takes [field accessor function](#field-accessor-functions) as a first a
 
 Example:
 ```js
-const scheme = {
+const schema = {
   type : Type.STRING,
   $custom : (fa) => {
     const value = fa() || '';
@@ -232,11 +232,11 @@ const scheme = {
 * [Static functions](#static-functions)
     + [`validate()`](#validate)
     + [`tryValidate()`](#tryvalidate)
-    + [`getSchemeValue()`](#getschemevalue-getfieldname-getfieldpresence)
-    + [`getFieldName()`](#getschemevalue-getfieldname-getfieldpresence)
-    + [`getFieldPresence()`](#getschemevalue-getfieldname-getfieldpresence)
+    + [`getSchemaValue()`](#getschemavalue-getfieldname-getfieldpresence)
+    + [`getFieldName()`](#getschemavalue-getfieldname-getfieldpresence)
+    + [`getFieldPresence()`](#getschemavalue-getfieldname-getfieldpresence)
     + [`getInitial()`](#getinitial)
-    + [`getSubScheme()`](#getsubscheme)
+    + [`getSubSchema()`](#getsubschema)
     + [`setDefaultOptions()`](#setdefaultoptions)
 * [Sculp class](#sculp-class)
     + [`constructor()`](#constructor)
@@ -247,9 +247,9 @@ const scheme = {
     + [`setField()`](#setfield-setfields)
     + [`setFields()`](#setfield-setfields)
     + [`getFieldState()`](#getfieldstate)
-    + [`getSchemeValue()`](#getschemevalue-getfieldname-getfieldpresence-1)
-    + [`getFieldName()`](#getschemevalue-getfieldname-getfieldpresence-1)
-    + [`getFieldPresence()`](#getschemevalue-getfieldname-getfieldpresence-1)
+    + [`getSchemaValue()`](#getschemavalue-getfieldname-getfieldpresence-1)
+    + [`getFieldName()`](#getschemavalue-getfieldname-getfieldpresence-1)
+    + [`getFieldPresence()`](#getschemavalue-getfieldname-getfieldpresence-1)
 * [Field accessor functions](#field-accessor-functions)
 * [Options](#options)
     
@@ -257,10 +257,10 @@ const scheme = {
 
 ### `validate()`
 ```js
-validate(value: any, scheme: object, ?options: object): any
+validate(value: any, schema: object, ?options: object): any
 ```
 
-Validates `value` with `scheme` and returns validated value or throws `ValidationError` when validation fails. Takes [options](#options) as an optional argument.
+Validates `value` with `schema` and returns validated value or throws `ValidationError` when validation fails. Takes [options](#options) as an optional argument.
 
 Example:
 ```js
@@ -273,17 +273,17 @@ validate('invalid str', { type : Type.STRING, $length : 9 }, { strict : true });
 
 ### `tryValidate()`
 ```js
-tryValidate(value: any, scheme: object, ?options: object): object
+tryValidate(value: any, schema: object, ?options: object): object
 ```
 
 Not throwing version of `validate`.
-Validates `value` with `scheme` and returns object with `result`, `errors` and `fieldsState` fields. Takes [options](#options) as an optional argument.
+Validates `value` with `schema` and returns object with `result`, `errors` and `fieldsState` fields. Takes [options](#options) as an optional argument.
 
-### `getSchemeValue()`, `getFieldName()`, `getFieldPresence()`
+### `getSchemaValue()`, `getFieldName()`, `getFieldPresence()`
 ```js
-getSchemeValue(value: any, scheme: object, path: string, property: string): any
-getFieldName(value: any, scheme: object, path: string): string
-getFieldPresence(value: any, scheme: object, path: string): string
+getSchemaValue(value: any, schema: object, path: string, property: string): any
+getFieldName(value: any, schema: object, path: string): string
+getFieldPresence(value: any, schema: object, path: string): string
 ```
 
 TODO : write description
@@ -291,21 +291,21 @@ The use of this functions is discouraged.
 
 ### `getInitial()`
 ```js
-getInitial(scheme: object): any
+getInitial(schema: object): any
 ```
 
-Get initial value for scheme. Constructed from `initial` property values of scheme.
+Get initial value for schema. Constructed from `initial` property values of schema.
 
-### `getSubScheme()`
+### `getSubSchema()`
 ```js
-getSubScheme(scheme: object, path: string): object
+getSubSchema(schema: object, path: string): object
 ```
 
-Get sub-scheme for scheme.
+Get sub-schema for schema.
 
 Example:
 ```js
-getSubScheme(scheme, '.some.nested.field'); // returns scheme for subfield 'some.nested.field'
+getSubSchema(schema, '.some.nested.field'); // returns schema for subfield 'some.nested.field'
 ```
 
 
@@ -329,7 +329,7 @@ setDefaultOptions({
 
 ### `constructor()`
 ```js
-Sculp(value: any, scheme: object, ?options: object): undefined
+Sculp(value: any, schema: object, ?options: object): undefined
 ```
 
 Constructs new `Sculp` instance.
@@ -338,7 +338,7 @@ Sculp instance allows you to perform fast incremental validations on your value 
 Example:
 ```js
 const value = { ... };
-const sculp =  new Sculp(value, scheme);
+const sculp =  new Sculp(value, schema);
 sculp.validate(); // returns validation result for value
 sculp.setField('.some.deep.nested.field', newValue); // mutates some field of value object
 sculp.validate(); // returns validation result for current value
@@ -349,12 +349,12 @@ sculp.validate(); // returns validation result for current value
 Sculp.prototype.validate(): any
 ```
 
-The same as static `validate` but runs validation on current value using `scheme` and `options` provided to Sculp constructor.
+The same as static `validate` but runs validation on current value using `schema` and `options` provided to Sculp constructor.
 Returns validated value or throws `ValidationError` when validation fails.
 
 Example:
 ```js
-const sculp =  new Sculp({ field : 1 }, scheme);
+const sculp =  new Sculp({ field : 1 }, schema);
 sculp.setField('.field', 2); // mutates field of value object
 sculp.validate(); // returns validation result for current value
 ```
@@ -364,12 +364,12 @@ sculp.validate(); // returns validation result for current value
 Sculp.prototype.tryValidate(): object
 ```
 
-The same as static `tryValidate` but runs validation on current value using `scheme` and `options` provided to Sculp constructor.
+The same as static `tryValidate` but runs validation on current value using `schema` and `options` provided to Sculp constructor.
 Returns object with `result`, `errors` and `fieldsState` fields.
 
 Example:
 ```js
-const sculp =  new Sculp({ field : 1 }, scheme);
+const sculp =  new Sculp({ field : 1 }, schema);
 sculp.setField('.field', 2); // mutates field of value object
 sculp.tryValidate(); // returns object with validation result and errors
 ```
@@ -383,7 +383,7 @@ Returns current value.
 
 Example:
 ```js
-const sculp =  new Sculp({ field : 1 }, scheme);
+const sculp =  new Sculp({ field : 1 }, schema);
 sculp.setField('.field', 2);
 sculp.getValue(); // returns { field : 2 }
 ```
@@ -397,7 +397,7 @@ Replaces current value and clears all internal Sculp instance caches.
 
 Example:
 ```js
-const sculp =  new Sculp({ field : 1 }, scheme);
+const sculp =  new Sculp({ field : 1 }, schema);
 sculp.validate(); // returns validation result for { field : 1 }
 sculp.setValue({ newField : 2 }); // replaces
 sculp.validate(); // returns validation result for { newField : 2 }
@@ -415,7 +415,7 @@ Mutates current value according to provided parameters.
 
 Example:
 ```js
-const sculp =  new Sculp({ list : [ {} ] }, scheme);
+const sculp =  new Sculp({ list : [ {} ] }, schema);
 sculp.setField('.list[0].a', 1);
 sculp.setFields({ '.list[0].b' : 2, '.list[0].c' : 3 });
 sculp.getValue(); // returns { list : [ { a : 1, b : 2, c : 3 } ] }
@@ -429,21 +429,21 @@ Sculp.prototype.getFieldState(path: string): object
 Returns field state object for path `path` of current value.
 See [Field state object](#field-state-object).
 
-### `getSchemeValue()`, `getFieldName()`, `getFieldPresence()`
+### `getSchemaValue()`, `getFieldName()`, `getFieldPresence()`
 ```js
-Sculp.prototype.getSchemeValue(path: string, property: string): any
+Sculp.prototype.getSchemaValue(path: string, property: string): any
 Sculp.prototype.getFieldName(path: string): string
 Sculp.prototype.getFieldPresence(path: string): string
 ```
 
-When you need to get value of some scheme definition property or validation rule you can use `getSchemeValue` method. Useful to get values of conditional rules. For example, if you have conditional `$presence` rule for some field you can get current presence with `getSchemeValue(path, '$presence')`.
+When you need to get value of some schema definition property or validation rule you can use `getSchemaValue` method. Useful to get values of conditional rules. For example, if you have conditional `$presence` rule for some field you can get current presence with `getSchemaValue(path, '$presence')`.
 
 Example:
 ```js
-const sculp =  new Sculp(value, scheme);
-sculp.getSchemeValue('.someField', '$values');
-sculp.getFieldName('.someField'); // the same as sculp.getSchemeValue('.someField', 'name');
-sculp.getFieldPresence('.someField'); // the same as sculp.getSchemeValue('.someField', '$presence');
+const sculp =  new Sculp(value, schema);
+sculp.getSchemaValue('.someField', '$values');
+sculp.getFieldName('.someField'); // the same as sculp.getSchemaValue('.someField', 'name');
+sculp.getFieldPresence('.someField'); // the same as sculp.getSchemaValue('.someField', '$presence');
 ```
 
 ### Field Accessor Functions
@@ -459,7 +459,7 @@ fieldAccessor('^^.prop'); // returns field 'prop' of root value
 
 Examples:
 ```js
-const scheme = {
+const schema = {
   type : Type.OBJECT,
   properties : {
     a : { type : Type.STRING },
@@ -490,7 +490,7 @@ Sets the language for error messages. Only English (`'en'`) and Russian (`'ru'`)
 Default value is `en`.
 
 #### `strict`
-By default Sculp will try to cast value to required type. For example it will return 42 when validating string '42' with { type : Type.NUMBER } scheme.
+By default Sculp will try to cast value to required type. For example it will return 42 when validating string '42' with { type : Type.NUMBER } schema.
 If you don't want Sculp to try to cast values to required types you can set `strict` option to `true`.
 Default value is `false`. 
  
@@ -529,12 +529,12 @@ const options = {
   }
 };
 
-const scheme = {
+const schema = {
   type : 'INTEGER',
   $divisible : 3
 }
 
-validate(9, scheme, options);
+validate(9, schema, options);
 ```
 
 ## Field state object
@@ -543,7 +543,7 @@ validate(9, scheme, options);
 
 ## Roadmap
 * Partial validation support
-* Computed schemes support
+* Computed schemas support
 * Passing context
 * Add popular validation rules
 

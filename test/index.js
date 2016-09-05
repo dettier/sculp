@@ -19,71 +19,71 @@ describe('Sculp:', function () {
   describe('validate:', function () {
 
     it('should throw if type is set but undefined', function () {
-      const scheme = { type : Type.STRING111 };
-      assert.throws(() => validate('111', scheme), 'Unknown type');
+      const schema = { type : Type.STRING111 };
+      assert.throws(() => validate('111', schema), 'Unknown type');
     });
 
     it('should validate primitive values', function () {
-      let scheme;
+      let schema;
       let result;
 
-      scheme = { type : Type.STRING };
-      result = validate('aaabbbccc', scheme);
+      schema = { type : Type.STRING };
+      result = validate('aaabbbccc', schema);
       assert.equal(result, 'aaabbbccc');
 
-      scheme = { type : Type.NUMBER, precision : 2 };
-      result = validate('7.4444444', scheme);
+      schema = { type : Type.NUMBER, precision : 2 };
+      result = validate('7.4444444', schema);
       assert.equal(result, 7.44);
 
-      scheme = { type : Type.BOOLEAN };
-      result = validate('true', scheme);
+      schema = { type : Type.BOOLEAN };
+      result = validate('true', schema);
       assert.equal(result, true);
     });
 
     it('should validate array', function () {
-      const scheme = {
+      const schema = {
         type : Type.ARRAY,
         items : { type : Type.NUMBER }
       };
-      const result = validate(['3', 4, '5'], scheme);
+      const result = validate(['3', 4, '5'], schema);
       assert.deepEqual(result, [ 3, 4, 5 ]);
     });
 
     it('should throw error when couldn\'t validate array', function () {
-      const scheme = {
+      const schema = {
         type : Type.ARRAY,
         items : { type : Type.NUMBER }
       };
 
       assert.throws(function () {
-        validate({ a : '2' }, scheme);
+        validate({ a : '2' }, schema);
       }, 'Validation failed (сouldn\'t cast value to type ARRAY)');
     });
 
     it('should validate object', function () {
-      const scheme = {
+      const schema = {
         type : Type.OBJECT,
         properties : {
           key1 : { type : Type.NUMBER },
           key2 : { type : Type.STRING }
         }
       };
-      const result = validate({ key1 : '-1', key2 : 'a' }, scheme);
+      const result = validate({ key1 : '-1', key2 : 'a' }, schema);
       assert.deepEqual(result, { key1 : -1, key2 : 'a' });
     });
 
     it('should validate group', function () {
-      const scheme = {
+      const schema = {
         type : Type.GROUP,
         properties : {
           key1 : { type : Type.NUMBER },
           key2 : { type : Type.STRING }
         }
       };
-      const result = validate({ key1 : '-1', key2 : 'a' }, scheme);
+      const result = validate({ key1 : '-1', key2 : 'a' }, schema);
       assert.deepEqual(result, { key1 : -1, key2 : 'a' });
 
-      const result2 = validate({}, scheme);
+      const result2 = validate({}, schema);
       assert.deepEqual(result2, {});
     });
 
@@ -92,17 +92,17 @@ describe('Sculp:', function () {
   describe('validate: validating array items', function () {
 
     it('should throw error when items are of wrong type', function () {
-      const scheme = {
+      const schema = {
         type : Type.ARRAY,
         items : {
           type : Type.NUMBER
         }
       };
       assert.throws(function () {
-        validate([ {} ], scheme);
+        validate([ {} ], schema);
       }, 'Validation failed for field "[0]" (сouldn\'t cast value to type NUMBER)');
       assert.throws(function () {
-        validate([ [] ], scheme);
+        validate([ [] ], schema);
       }, 'Validation failed for field "[0]" (сouldn\'t cast value to type NUMBER)');
     });
 
@@ -112,7 +112,7 @@ describe('Sculp:', function () {
   describe('validate: failed validations & valid values', function () {
 
     it('should change value to valid for primitive values', function () {
-      const scheme = {
+      const schema = {
         type : Type.OBJECT,
         properties : {
           key : {
@@ -122,12 +122,12 @@ describe('Sculp:', function () {
           }
         }
       };
-      const result = validate({ key : 3 }, scheme);
+      const result = validate({ key : 3 }, schema);
       assert.deepEqual(result, { key : 10 });
     });
 
     it('should change value to valid for objects if subfield validation failed', function () {
-      const scheme = {
+      const schema = {
         type : Type.OBJECT,
         valid : undefined,
         properties : {
@@ -137,14 +137,14 @@ describe('Sculp:', function () {
           }
         }
       };
-      const result = validate({ key : 3 }, scheme);
+      const result = validate({ key : 3 }, schema);
       assert.deepEqual(result, undefined);
     });
 
   });
 
   it('undefined value should remain undefined', function () {
-    const scheme = {
+    const schema = {
       type : Type.OBJECT,
       properties : {
         key : {
@@ -152,7 +152,7 @@ describe('Sculp:', function () {
         }
       }
     };
-    const result = validate(undefined, scheme);
+    const result = validate(undefined, schema);
     assert.deepEqual(result, undefined);
   });
 
@@ -160,7 +160,7 @@ describe('Sculp:', function () {
 
     it('should not calculate computes for undefined parent value', function () {
 
-      const scheme = {
+      const schema = {
         type : Type.OBJECT,
         properties : {
           key : {
@@ -169,7 +169,7 @@ describe('Sculp:', function () {
           }
         }
       };
-      const result = validate(undefined, scheme);
+      const result = validate(undefined, schema);
       assert.deepEqual(result, undefined);
 
     });
@@ -178,7 +178,7 @@ describe('Sculp:', function () {
 
   it('failed validation for absent fields does not matter', function () {
 
-    const scheme = {
+    const schema = {
       type : Type.OBJECT,
       properties : {
         a : { type : Type.NUMBER },
@@ -198,17 +198,17 @@ describe('Sculp:', function () {
 
     // this should fail as "c" value < 10
     assert.throws(() =>
-      validate(value, scheme));
+      validate(value, schema));
 
-    scheme.properties.b.$presence = Presence.ABSENT;
-    const result = validate(value, scheme);
+    schema.properties.b.$presence = Presence.ABSENT;
+    const result = validate(value, schema);
     assert.deepEqual(result, { a : 5 });
   });
 
   describe('valid values', function () {
 
     it('valid values: should change failed field value to valid', function () {
-      const scheme = {
+      const schema = {
         type: Type.OBJECT,
         valid : { a: '1' },
         $presence: Presence.REQUIRED,
@@ -220,12 +220,12 @@ describe('Sculp:', function () {
       };
 
       const value = { c : 'a' };
-      const result = validate(value, scheme);
+      const result = validate(value, schema);
       assert.deepEqual(result, { a : '1' });
     });
 
     it('valid value should also be validated', function () {
-      const scheme = {
+      const schema = {
         type: Type.OBJECT,
         valid : { a: 1, b : 2 },
         $presence: Presence.REQUIRED,
@@ -237,14 +237,14 @@ describe('Sculp:', function () {
       };
 
       const value = { c : 'a' };
-      const result = validate(value, scheme);
+      const result = validate(value, schema);
       assert.deepEqual(result, { a: '1', b : '2' });
     });
 
   });
 
   it('should remove initial item values if such option provided', function () {
-    const scheme = {
+    const schema = {
       type: Type.OBJECT,
       properties: {
         a : {
@@ -259,12 +259,12 @@ describe('Sculp:', function () {
     };
 
     const value = { a : 1, b : 2 };
-    const result = validate(value, scheme, { removeInitial : true });
+    const result = validate(value, schema, { removeInitial : true });
     assert.deepEqual(result, { b : 2 });
   });
 
   it('undefined array items are removed from array', function () {
-    const scheme = {
+    const schema = {
       type: Type.ARRAY,
       $presence: Presence.REQUIRED,
       items: {
@@ -274,12 +274,12 @@ describe('Sculp:', function () {
     };
 
     const value = [ 1, undefined, 2];
-    const result = validate(value, scheme);
+    const result = validate(value, schema);
     assert.deepEqual(result, [ 1, 2 ]);
   });
 
   it('changing array item to undefined removes it from array', function () {
-    const scheme = {
+    const schema = {
       type: Type.ARRAY,
       $presence: Presence.REQUIRED,
       items: {
@@ -290,7 +290,7 @@ describe('Sculp:', function () {
     };
 
     const value = [ 1, undefined, 2];
-    const result = validate(value, scheme);
+    const result = validate(value, schema);
     assert.deepEqual(result, []);
   });
 

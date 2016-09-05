@@ -10,7 +10,7 @@ import {
 import { getValue, getAndEvaluateValue } from './object/helper';
 
 import {
-  getSubScheme,
+  getSubSchema,
   getParentPathMemoized,
   getRunValidationsForPath
 } from './helper';
@@ -44,19 +44,19 @@ export function getFieldAccessor (res, path, context) {
       if (dependencyTracker != null)
         dependencyTracker.registerDependency(path, p);
 
-      const _scheme = getSubScheme(context.rootScheme, p);
+      const _schema = getSubSchema(context.rootSchema, p);
       const _value = getAndEvaluateValue(context.rootValue, p);
 
       // should we run validations?
       const runValidations =
         context.runValidations &&
-        getRunValidationsForPath(context.rootScheme, context.rootValue, p);
+        getRunValidationsForPath(context.rootSchema, context.rootValue, p);
 
       const calculateTransformsAndComputes =
           context.calculateTransformsAndComputes === false ? false :
           getValue(context.rootValue, getParentPathMemoized(p)) != null;
 
-      result = validateField(_value, _scheme, p, {
+      result = validateField(_value, _schema, p, {
         ...context,
         calculateTransformsAndComputes,
         runValidations

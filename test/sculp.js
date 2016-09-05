@@ -13,7 +13,7 @@ import { Sculp, Type, Presence } from '../src/index';
 
 describe('Sculp class:', function () {
 
-  const scheme = {
+  const schema = {
     type : Type.OBJECT,
     $presence : Presence.REQUIRED,
     properties : {
@@ -26,7 +26,7 @@ describe('Sculp class:', function () {
 
     it('should return all errors for whole object', function () {
 
-      const sculp = new Sculp({ lessThan5 : 6, moreThan5 : 4 }, scheme);
+      const sculp = new Sculp({ lessThan5 : 6, moreThan5 : 4 }, schema);
       const errors = sculp.getErrors();
 
       assert.deepEqual(errors, [ {
@@ -48,7 +48,7 @@ describe('Sculp class:', function () {
     it('should return error when trying to get field errors when option is not provided',
     function () {
 
-      const sculp = new Sculp({ lessThan5 : 6, moreThan5 : 4 }, scheme);
+      const sculp = new Sculp({ lessThan5 : 6, moreThan5 : 4 }, schema);
       assert.throws(() => sculp.getErrors('.lessThan5'),
         'Use extendFieldStatesWithErrors option to get errors for specific fields');
 
@@ -56,7 +56,7 @@ describe('Sculp class:', function () {
 
     it('should return field errors when path argument is provided', function () {
 
-      const sculp = new Sculp({ lessThan5 : 6, moreThan5 : 4 }, scheme,
+      const sculp = new Sculp({ lessThan5 : 6, moreThan5 : 4 }, schema,
         { extendFieldStatesWithErrors : true });
 
       const errors = sculp.getErrors('.lessThan5');

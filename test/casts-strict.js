@@ -18,47 +18,47 @@ describe('casts:', function () {
 
   describe('STRING:', function () {
 
-    const scheme = { type : STRING };
+    const schema = { type : STRING };
 
     it('should validate string value', function () {
-      assert.equal(validate('string ', scheme, options), 'string ');
+      assert.equal(validate('string ', schema, options), 'string ');
       // eslint-disable-next-line no-new-wrappers
-      assert.equal(validate(new String('string'), scheme, options), 'string');
+      assert.equal(validate(new String('string'), schema, options), 'string');
     });
 
     it('should return error object if value is not a string', function () {
-      assert.throws(() => validate(2, scheme, options), 'сouldn\'t cast value to type STRING');
-      assert.throws(() => validate(true, scheme, options), 'сouldn\'t cast value to type STRING');
-      assert.throws(() => validate({}, scheme, options), 'сouldn\'t cast value to type STRING');
-      assert.throws(() => validate([], scheme, options), 'сouldn\'t cast value to type STRING');
+      assert.throws(() => validate(2, schema, options), 'сouldn\'t cast value to type STRING');
+      assert.throws(() => validate(true, schema, options), 'сouldn\'t cast value to type STRING');
+      assert.throws(() => validate({}, schema, options), 'сouldn\'t cast value to type STRING');
+      assert.throws(() => validate([], schema, options), 'сouldn\'t cast value to type STRING');
     });
 
   });
 
   describe('STRING_NET:', function () {
 
-    const scheme = { type : STRING_NET };
+    const schema = { type : STRING_NET };
 
     it('should return undefined is string is empty or whitespace-only', function () {
-      assert.equal(validate('', scheme, options), undefined);
-      assert.equal(validate(' ', scheme, options), undefined);
-      assert.equal(validate('\t', scheme, options), undefined);
+      assert.equal(validate('', schema, options), undefined);
+      assert.equal(validate(' ', schema, options), undefined);
+      assert.equal(validate('\t', schema, options), undefined);
     });
 
     it('should validate string value', function () {
-      assert.equal(validate('string ', scheme, options), 'string');
+      assert.equal(validate('string ', schema, options), 'string');
       // eslint-disable-next-line no-new-wrappers
-      assert.equal(validate(new String(' string'), scheme, options), 'string');
+      assert.equal(validate(new String(' string'), schema, options), 'string');
     });
 
     it('should return error object if value is not a string', function () {
-      assert.throws(() => validate(2, scheme, options),
+      assert.throws(() => validate(2, schema, options),
         'сouldn\'t cast value to type STRING_NET');
-      assert.throws(() => validate(true, scheme, options),
+      assert.throws(() => validate(true, schema, options),
         'сouldn\'t cast value to type STRING_NET');
-      assert.throws(() => validate({}, scheme, options),
+      assert.throws(() => validate({}, schema, options),
         'сouldn\'t cast value to type STRING_NET');
-      assert.throws(() => validate([], scheme, options),
+      assert.throws(() => validate([], schema, options),
         'сouldn\'t cast value to type STRING_NET');
     });
 
@@ -67,22 +67,22 @@ describe('casts:', function () {
 
   describe('NUMBER:', function () {
 
-    const scheme = { type : NUMBER };
+    const schema = { type : NUMBER };
 
     it('should validate number value', function () {
-      assert.equal(validate(4, scheme, options), 4);
+      assert.equal(validate(4, schema, options), 4);
       // eslint-disable-next-line no-new-wrappers
-      assert.equal(validate(new Number(12), scheme, options), 12);
+      assert.equal(validate(new Number(12), schema, options), 12);
     });
 
     it('should return error object if value is not a number', function () {
-      assert.throws(() => validate('2', scheme, options),
+      assert.throws(() => validate('2', schema, options),
         'сouldn\'t cast value to type NUMBER');
-      assert.throws(() => validate(true, scheme, options),
+      assert.throws(() => validate(true, schema, options),
         'сouldn\'t cast value to type NUMBER');
-      assert.throws(() => validate({}, scheme, options),
+      assert.throws(() => validate({}, schema, options),
         'сouldn\'t cast value to type NUMBER');
-      assert.throws(() => validate([], scheme, options),
+      assert.throws(() => validate([], schema, options),
         'сouldn\'t cast value to type NUMBER');
     });
 
@@ -91,23 +91,23 @@ describe('casts:', function () {
 
   describe('DATE:', function () {
 
-    const scheme = { type : DATE };
+    const schema = { type : DATE };
 
     it('should validate date value', function () {
       const date = new Date();
-      assert.deepEqual(validate(date, scheme, options), date);
+      assert.deepEqual(validate(date, schema, options), date);
     });
 
     it('should return error object if value is not a date', function () {
-      assert.throws(() => validate('2', scheme, options),
+      assert.throws(() => validate('2', schema, options),
         'сouldn\'t cast value to type DATE');
-      assert.throws(() => validate(2, scheme, options),
+      assert.throws(() => validate(2, schema, options),
         'сouldn\'t cast value to type DATE');
-      assert.throws(() => validate(true, scheme, options),
+      assert.throws(() => validate(true, schema, options),
         'сouldn\'t cast value to type DATE');
-      assert.throws(() => validate({}, scheme, options),
+      assert.throws(() => validate({}, schema, options),
         'сouldn\'t cast value to type DATE');
-      assert.throws(() => validate([], scheme, options),
+      assert.throws(() => validate([], schema, options),
         'сouldn\'t cast value to type DATE');
     });
 
@@ -116,23 +116,23 @@ describe('casts:', function () {
 
   describe('FUNCTION:', function () {
 
-    const scheme = { type : FUNCTION };
+    const schema = { type : FUNCTION };
 
     it('should validate function value', function () {
       const f = function () {};
-      assert.strictEqual(validate(f, scheme, options), f);
+      assert.strictEqual(validate(f, schema, options), f);
     });
 
     it('should return error object if value is not a function', function () {
-      assert.throws(() => validate('2', scheme, options),
+      assert.throws(() => validate('2', schema, options),
         'сouldn\'t cast value to type FUNCTION');
-      assert.throws(() => validate(2, scheme, options),
+      assert.throws(() => validate(2, schema, options),
         'сouldn\'t cast value to type FUNCTION');
-      assert.throws(() => validate(true, scheme, options),
+      assert.throws(() => validate(true, schema, options),
         'сouldn\'t cast value to type FUNCTION');
-      assert.throws(() => validate({}, scheme, options),
+      assert.throws(() => validate({}, schema, options),
         'сouldn\'t cast value to type FUNCTION');
-      assert.throws(() => validate([], scheme, options),
+      assert.throws(() => validate([], schema, options),
         'сouldn\'t cast value to type FUNCTION');
     });
 
@@ -141,21 +141,21 @@ describe('casts:', function () {
 
   describe('BOOLEAN:', function () {
 
-    const scheme = { type : BOOLEAN };
+    const schema = { type : BOOLEAN };
 
     it('should validate boolean value', function () {
-      assert.strictEqual(validate(true, scheme, options), true);
-      assert.strictEqual(validate(false, scheme, options), false);
+      assert.strictEqual(validate(true, schema, options), true);
+      assert.strictEqual(validate(false, schema, options), false);
     });
 
     it('should return error object if value is not a boolean', function () {
-      assert.throws(() => validate('2', scheme, options),
+      assert.throws(() => validate('2', schema, options),
         'сouldn\'t cast value to type BOOLEAN');
-      assert.throws(() => validate(1, scheme, options),
+      assert.throws(() => validate(1, schema, options),
         'сouldn\'t cast value to type BOOLEAN');
-      assert.throws(() => validate({}, scheme, options),
+      assert.throws(() => validate({}, schema, options),
         'сouldn\'t cast value to type BOOLEAN');
-      assert.throws(() => validate([], scheme, options),
+      assert.throws(() => validate([], schema, options),
         'сouldn\'t cast value to type BOOLEAN');
     });
 
