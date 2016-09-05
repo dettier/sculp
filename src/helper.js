@@ -150,7 +150,7 @@ export const isSubfieldOrEqualMemoized =
 export function extendFieldStateWithError (fieldState, errorObject) {
   if (fieldState.errors == null)
     fieldState.errors = [];
-  fieldState.errors.push(errorObject.message);
+  fieldState.errors.push(errorObject);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
