@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.0.1 (2016-12-09)
+- Fix fixFailedValuesValidation option.
+
 ## 2.0.0 (2016-09-05)
 - **Breaking change** Fix #2. Rename `getSchemeValue` to `getSchemaValue` and `getSubScheme` to `getSubSchema`. Old functions are not removed in this version. 
 - **Breaking change** Fix #4. Change fieldState errors field to contain error objects instead of messages.

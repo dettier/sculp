@@ -131,4 +131,15 @@ describe('Validation rules:', function () {
     assert.deepEqual(validate(1, schema), undefined);
   });
 
+  it('should fix failed $values validation when corresponding option is provided',
+  function () {
+    const schema = {
+      type : Type.NUMBER,
+      $values : [ -1, 0, 1 ]
+    };
+    const options = { fixFailedValuesValidation : true };
+    assert.doesNotThrow(() => validate(2, schema, options));
+    assert.equal(validate(2, schema, options), -1);
+  });
+
 });

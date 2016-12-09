@@ -212,9 +212,9 @@ function calculateAndValidateRules (schema, res, path, onlyCalculate, context) {
 
     if (context.fixFailedValuesValidation && valuesRuleGotError) {
 
-      const validValues = fieldState[PRESENCE_RULE_NAME];
+      const validValues = fieldState[VALUES_RULE_NAME];
       if (validValues.length > 0) {
-        res = fieldState[PRESENCE_RULE_NAME][0];
+        res = fieldState[VALUES_RULE_NAME][0];
       }
     }
   }
