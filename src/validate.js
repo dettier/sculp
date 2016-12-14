@@ -191,7 +191,8 @@ function calculateAndValidateRules (schema, res, path, onlyCalculate, context) {
       schema, PRESENCE_RULE_NAME, res, path, onlyCalculate, context);
   const presenceRuleGotError = fieldState.errorsCount > 0;
 
-  if (fieldState[PRESENCE_RULE_NAME] === Presence.ABSENT) {
+  const fieldPresence = fieldState[PRESENCE_RULE_NAME];
+  if (fieldPresence === Presence.ABSENT) {
     res = undefined;
     //clearErrorsForField(schema, path, context);
   }
@@ -212,9 +213,17 @@ function calculateAndValidateRules (schema, res, path, onlyCalculate, context) {
 
     if (context.fixFailedValuesValidation && valuesRuleGotError) {
 
-      const validValues = fieldState[VALUES_RULE_NAME];
-      if (validValues.length > 0) {
-        res = fieldState[VALUES_RULE_NAME][0];
+      // if presence is required, then use first valid value
+      // from $values validation
+      // otherwise set field value to undefined
+
+      if (fieldPresence === Presence.REQUIRED) {
+        const validValues = fieldState[VALUES_RULE_NAME];
+        if (validValues.length > 0) {
+          res = fieldState[VALUES_RULE_NAME][0];
+        }
+      } else {
+        res = undefined;
       }
     }
   }

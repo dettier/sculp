@@ -131,15 +131,29 @@ describe('Validation rules:', function () {
     assert.deepEqual(validate(1, schema), undefined);
   });
 
-  it('should fix failed $values validation when corresponding option is provided',
-  function () {
-    const schema = {
-      type : Type.NUMBER,
-      $values : [ -1, 0, 1 ]
-    };
-    const options = { fixFailedValuesValidation : true };
-    assert.doesNotThrow(() => validate(2, schema, options));
-    assert.equal(validate(2, schema, options), -1);
+  describe('fixFailedValuesValidation === true', function () {
+
+    it('should clear value if field is not required', function () {
+      const schema = {
+        type : Type.NUMBER,
+        $values : [ -1, 0, 1 ]
+      };
+      const options = { fixFailedValuesValidation : true };
+      assert.doesNotThrow(() => validate(2, schema, options));
+      assert.equal(validate(2, schema, options), undefined);
+    });
+
+    it('should set field value to first valid $values if field is required', function () {
+      const schema = {
+        type : Type.NUMBER,
+        $presence : Presence.REQUIRED,
+        $values : [ -1, 0, 1 ]
+      };
+      const options = { fixFailedValuesValidation : true };
+      assert.doesNotThrow(() => validate(2, schema, options));
+      assert.equal(validate(2, schema, options), -1);
+    });
+
   });
 
 });
