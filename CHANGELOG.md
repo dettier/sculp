@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.0.2 (2016-12-09)
+- Change fixFailedValuesValidation option logic. When $values validation fails this option will fix this by doing the following: clear field value for optinal fields or change value to first $values value for required fields.  
+
 ## 2.0.1 (2016-12-09)
 - Fix fixFailedValuesValidation option.
 
