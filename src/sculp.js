@@ -18,7 +18,7 @@ import {
   getSubSchema,
   getSubSchemaHandlingPseudoFields } from './helper';
 
-import { setLanguage } from './i18n/lang';
+import { setMessages } from './i18n/lang';
 import { currentDefaultOptions } from './options';
 
 import DependencyTracker from './dependency-tracker';
@@ -220,7 +220,7 @@ class Sculp {
 
   tryValidate () {
     let options = this.options;
-    setLanguage(this.options.lang);
+    setMessages(this.options.messages);
 
     // this means that there were no changes since last validation
     if (this.CACHE.hasOwnProperty(''))

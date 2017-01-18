@@ -8,13 +8,15 @@ import { assert } from 'chai';
 import { validate } from '../src/index';
 import { Type, Presence } from '../src/enums';
 
+import ruMessages from '../src/i18n/languages/ru';
+
 ////////////////////////////////////////////////////////////////////////////////
 // REQUIRES : END
 ////////////////////////////////////////////////////////////////////////////////
 
 describe('i18n:', function () {
 
-  describe('lang:', function () {
+  describe('messages option:', function () {
 
     const schema = {
       type : Type.STRING,
@@ -29,10 +31,10 @@ describe('i18n:', function () {
 
     });
 
-    it('should have russian messages if language changed', function () {
+    it('should have russian messages if provided', function () {
 
       assert.throws(() => {
-        validate(undefined, schema, { lang : 'ru' });
+        validate(undefined, schema, { messages : ruMessages });
       }, 'Ошибка валидации (значение не указано)');
 
     });

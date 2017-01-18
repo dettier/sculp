@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.0.0 (2017-01-18)
+- **Breaking change** Fix #5. `lang` option changed to `messages` option.
+
 ## 2.1.0 (2016-12-09)
 - Change fixFailedValuesValidation option logic. When $values validation fails this option will fix this by doing the following: clear field value for optinal fields or change value to first $values value for required fields.  
 

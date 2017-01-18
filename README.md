@@ -321,7 +321,7 @@ Example:
 setDefaultOptions({
   strict : true,
   casts : { ... },
-  lang : 'ru'
+  messages : russianLangMessages
 });
 ```
 
@@ -485,9 +485,18 @@ const schema = {
 These options can be provided to `validate`, `tryValidate` static functions and `Sculp` constructor.
 If you need to set options application-wide use `setDefaultOptions` function.
 
-#### `lang`
-Sets the language for error messages. Only English (`'en'`) and Russian (`'ru'`) languages are supported right now.
-Default value is `en`.
+#### `messages`
+For i18n purposes you can provide your custom strings to use as error messages.
+Only English and Russian message strings are provided with the library right now.
+Default value is an object with English language error messages.
+
+Example:
+```
+import russianMessages from 'sculp/lib/i18n/ru';
+validate(value, schema, { messages : ruMessages });
+// or
+setDefaultOptions({ messages : ruMessages });
+```
 
 #### `strict`
 By default Sculp will try to cast value to required type. For example it will return 42 when validating string '42' with { type : Type.NUMBER } schema.

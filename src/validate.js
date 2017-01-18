@@ -479,7 +479,7 @@ export default (rootValue, rootSchema, path = '', options = {}) => {
     ERRORS_CACHE : {},
     FIELD_STATE_CACHE : {},
     ...options,
-    lang : undefined,
+    messages : undefined,
     validations : {
       ...VALIDATIONS,
       ...options.validations
