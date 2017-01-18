@@ -2,7 +2,7 @@
 // REQUIRES : BEGIN
 ////////////////////////////////////////////////////////////////////////////////
 
-import { getMessage } from './i18n/lang';
+import { getMessage } from './lang';
 
 import map from 'lodash-compat/collection/map';
 import ltrim from 'underscore.string/ltrim';

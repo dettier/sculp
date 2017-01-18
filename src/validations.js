@@ -2,7 +2,7 @@
 // REQUIRES : BEGIN
 ////////////////////////////////////////////////////////////////////////////////
 
-import { getMessage } from './i18n/lang';
+import { getMessage } from './lang';
 
 import isRegExp from 'lodash-compat/lang/isRegExp';
 import isNumber from 'lodash-compat/lang/isNumber';

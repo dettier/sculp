@@ -2,7 +2,7 @@
 // REQUIRES : BEGIN
 ////////////////////////////////////////////////////////////////////////////////
 
-import { currentDefaultOptions } from '../options';
+import { currentDefaultOptions } from './options';
 
 import capitalize from 'underscore.string/capitalize';
 import template from 'lodash-compat/string/template';

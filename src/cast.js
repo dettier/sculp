@@ -8,7 +8,7 @@ import isArray from 'lodash-compat/lang/isArray';
 import isFunction from 'lodash-compat/lang/isFunction';
 import keys from 'lodash-compat/object/keys';
 
-import { getMessage } from './i18n/lang';
+import { getMessage } from './lang';
 
 import { CAST_ERROR, Type } from './enums';
 

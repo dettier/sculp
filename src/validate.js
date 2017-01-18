@@ -18,7 +18,7 @@ import { getFieldAccessor } from './field-accessor';
 import { Type, Presence } from './enums';
 
 import { getAndEvaluateValue } from './object/helper';
-import { getMessage } from './i18n/lang';
+import { getMessage } from './lang';
 
 import {
     getSubSchema,

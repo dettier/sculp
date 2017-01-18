@@ -18,7 +18,7 @@ import {
   getSubSchema,
   getSubSchemaHandlingPseudoFields } from './helper';
 
-import { setMessages } from './i18n/lang';
+import { setMessages } from './lang';
 import { currentDefaultOptions } from './options';
 
 import DependencyTracker from './dependency-tracker';

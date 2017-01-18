@@ -8,7 +8,7 @@ import { assert } from 'chai';
 import { validate } from '../src/index';
 import { Type, Presence } from '../src/enums';
 
-import ruMessages from '../src/i18n/languages/ru';
+import ruMessages from '../src/i18n/ru';
 
 ////////////////////////////////////////////////////////////////////////////////
 // REQUIRES : END
